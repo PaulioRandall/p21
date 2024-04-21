@@ -1,0 +1,35 @@
+{
+	"author": "Paul Williams",
+	"name": "p21",
+	"description": "Simple tool for adding parsable metadata as comments within Svelte components.",
+	"type": "module",
+	"license": "MIT",
+	"version": "0.1.0",
+	"engines": {
+		"node": ">=18"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/PaulioRandall/p21.git"
+	},
+	"keywords": [
+		"documentation",
+		"svelte",
+		"plunder",
+		"metadata"
+	],
+	"exports": {
+		"./package.json": "./package.json",
+		".": "./src/index.js"
+	},
+	"scripts": {
+		"fmt": "prettier --log-level warn --write .",
+		"test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --passWithNoTests",
+		"commit": "npm run fmt && npm run test && cat ./scripts/ready-to-ship.txt"
+	},
+	"devDependencies": {
+		"@nodelib/fs.walk": "2.0.0",
+		"jest": "29.7.0",
+		"prettier": "3.2.5"
+	}
+}
