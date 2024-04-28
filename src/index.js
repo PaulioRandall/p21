@@ -1,2 +1,2 @@
-export { default as default } from './parser'
-export { parse, newNodeRegExp } from './parser'
+export * from './parser.js'
+export { parse as default } from './parser.js'

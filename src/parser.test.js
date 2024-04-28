@@ -1,5 +1,5 @@
 import upath from 'upath'
-import { parse, newNodeRegExp } from './parser'
+import { parse, newNodeRegExp } from './parser.js'
 
 const testdataDir = './src/testdata'
 
