@@ -14,7 +14,7 @@ export const parse = (src, options = {}) => {
 		options = parseOptions(options)
 		return parseTree(src, options)
 	} catch (e) {
-		console.error(`[P21] Unable to parse '${src}'`)
+		console.error(`[P23] Unable to parse '${src}'`)
 		console.error(e)
 		return null
 	}
@@ -77,7 +77,7 @@ const readWholeFile = (absPath) => {
 const extractNodes = (data, options) => {
 	// Examples:
 	//p23.name: Abc
-	//P21.group.name: Abc
+	//p23.group.name: Abc
 
 	const nodes = {}
 	const regexp = newNodeRegExp(options.prefix)
