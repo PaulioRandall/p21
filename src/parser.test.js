@@ -1,10 +1,26 @@
-import path from 'path'
+import upath from 'upath'
 import { parse, newNodeRegExp } from './parser'
 
 const testdataDir = './src/testdata'
 
 const createSvelteFilePath = (filename) => {
-	return `${testdataDir}/files/${filename}.svelte`
+	return upath.join(`${testdataDir}/files/${filename}.svelte`)
+}
+
+const generateFileFields = (file) => {
+	return {
+		name: upath.basename(file),
+		relPath: upath.join(file),
+		absPath: upath.resolve(file),
+	}
+}
+
+const parseToUnix = (f) => {
+	return parse(f).map((m) => {
+		m.relPath = upath.toUnix(m.relPath)
+		m.absPath = upath.toUnix(m.absPath)
+		return m
+	})
 }
 
 describe('p21', () => {
@@ -83,9 +99,7 @@ describe('p21', () => {
 
 			expect(metadata).toEqual([
 				{
-					name: path.basename(file),
-					relPath: file,
-					absPath: path.resolve(file),
+					...generateFileFields(file),
 					nodes: {
 						artist: 'Rhapsody of Fire',
 					},
@@ -99,9 +113,7 @@ describe('p21', () => {
 
 			expect(metadata).toEqual([
 				{
-					name: path.basename(file),
-					relPath: file,
-					absPath: path.resolve(file),
+					...generateFileFields(file),
 					nodes: {
 						artist: 'Rhapsody of Fire',
 					},
@@ -115,9 +127,7 @@ describe('p21', () => {
 
 			expect(metadata).toEqual([
 				{
-					name: path.basename(file),
-					relPath: file,
-					absPath: path.resolve(file),
+					...generateFileFields(file),
 					nodes: {
 						artist: 'Rhapsody of Fire',
 						album: 'From Chaos to Eternity',
@@ -133,9 +143,7 @@ describe('p21', () => {
 
 			expect(metadata).toEqual([
 				{
-					name: path.basename(file),
-					relPath: file,
-					absPath: path.resolve(file),
+					...generateFileFields(file),
 					nodes: {
 						bands: {
 							artist: 'Rhapsody of Fire',
@@ -151,9 +159,7 @@ describe('p21', () => {
 
 			expect(metadata).toEqual([
 				{
-					name: path.basename(file),
-					relPath: file,
-					absPath: path.resolve(file),
+					...generateFileFields(file),
 					nodes: {
 						music: {
 							bands: {
@@ -171,9 +177,7 @@ describe('p21', () => {
 
 			expect(metadata).toEqual([
 				{
-					name: path.basename(file),
-					relPath: file,
-					absPath: path.resolve(file),
+					...generateFileFields(file),
 					nodes: {
 						type: 'Music',
 						music: {
@@ -190,21 +194,22 @@ describe('p21', () => {
 		})
 
 		test('Parses directory', () => {
-			const metadata = parse(`${testdataDir}/dir`)
+			const dir = upath.join(`${testdataDir}/dir`)
+			const metadata = parse(dir)
 
 			expect(metadata).toEqual([
 				{
 					name: 'BandOne.svelte',
-					relPath: `${testdataDir}/dir/BandOne.svelte`,
-					absPath: path.resolve(`${testdataDir}/dir/BandOne.svelte`),
+					relPath: upath.join(`${testdataDir}/dir/BandOne.svelte`),
+					absPath: upath.resolve(`${testdataDir}/dir/BandOne.svelte`),
 					nodes: {
 						artist: 'Rhapsody of Fire',
 					},
 				},
 				{
 					name: 'BandTwo.svelte',
-					relPath: `${testdataDir}/dir/BandTwo.svelte`,
-					absPath: path.resolve(`${testdataDir}/dir/BandTwo.svelte`),
+					relPath: upath.join(`${testdataDir}/dir/BandTwo.svelte`),
+					absPath: upath.resolve(`${testdataDir}/dir/BandTwo.svelte`),
 					nodes: {
 						artist: 'Children of Bodom',
 					},
@@ -220,9 +225,7 @@ describe('p21', () => {
 
 			expect(metadata).toEqual([
 				{
-					name: path.basename(file),
-					relPath: file,
-					absPath: path.resolve(file),
+					...generateFileFields(file),
 					nodes: {
 						artist: 'Rhapsody of Fire',
 					},
