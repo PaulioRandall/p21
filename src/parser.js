@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import * as fsWalk from '@nodelib/fs.walk'
 
-export const newNodeRegExp = (prefix = 'p21') => {
+export const newNodeRegExp = (prefix = 'p23') => {
 	return RegExp(
 		`^[^S\r\n]*//${prefix}((?:.[$a-zA-Z_][$a-zA-Z_0-9]*)+):(.*)$`,
 		'mgi'
@@ -22,7 +22,7 @@ export const parse = (src, options = {}) => {
 
 const parseOptions = ({ prefix }) => {
 	return {
-		prefix: prefix ? prefix : 'p21',
+		prefix: prefix ? prefix : 'p23',
 	}
 }
 
@@ -76,7 +76,7 @@ const readWholeFile = (absPath) => {
 
 const extractNodes = (data, options) => {
 	// Examples:
-	//p21.name: Abc
+	//p23.name: Abc
 	//P21.group.name: Abc
 
 	const nodes = {}

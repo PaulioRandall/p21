@@ -1,5 +1,5 @@
 <script>
-	//p21.artist:Children of Bodom
+	//p23.artist:Children of Bodom
 </script>
 
 <div />

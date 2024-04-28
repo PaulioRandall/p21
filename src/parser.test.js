@@ -23,11 +23,11 @@ const parseToUnix = (f) => {
 	})
 }
 
-describe('p21', () => {
+describe('p23', () => {
 	describe('newNodeRegExp', () => {
 		test('Non-nested node', () => {
-			const act = newNodeRegExp().exec('//p21.name:value')
-			const exp = expect.arrayContaining(['//p21.name:value', '.name', 'value'])
+			const act = newNodeRegExp().exec('//p23.name:value')
+			const exp = expect.arrayContaining(['//p23.name:value', '.name', 'value'])
 			expect(act).toEqual(exp)
 		})
 
@@ -44,9 +44,9 @@ describe('p21', () => {
 		})
 
 		test('Nested node', () => {
-			const act = newNodeRegExp().exec('//p21.group.name:value')
+			const act = newNodeRegExp().exec('//p23.group.name:value')
 			const exp = expect.arrayContaining([
-				'//p21.group.name:value',
+				'//p23.group.name:value',
 				'.group.name',
 				'value',
 			])
@@ -55,10 +55,10 @@ describe('p21', () => {
 
 		test('Messed up but valid node names', () => {
 			const act = newNodeRegExp().exec(
-				'//p21.$$$12313___.__dsfjk12$$6389__$$:value'
+				'//p23.$$$12313___.__dsfjk12$$6389__$$:value'
 			)
 			const exp = expect.arrayContaining([
-				'//p21.$$$12313___.__dsfjk12$$6389__$$:value',
+				'//p23.$$$12313___.__dsfjk12$$6389__$$:value',
 				'.$$$12313___.__dsfjk12$$6389__$$',
 				'value',
 			])
@@ -66,28 +66,28 @@ describe('p21', () => {
 		})
 
 		test('Empty value still returns entry', () => {
-			const act = newNodeRegExp().exec('//p21.name:')
-			const exp = expect.arrayContaining(['//p21.name:', '.name', ''])
+			const act = newNodeRegExp().exec('//p23.name:')
+			const exp = expect.arrayContaining(['//p23.name:', '.name', ''])
 			expect(act).toEqual(exp)
 		})
 
 		test('Fails if number first in node name', () => {
-			const act = newNodeRegExp().exec('//p21.1name:value')
+			const act = newNodeRegExp().exec('//p23.1name:value')
 			expect(act).toEqual(null)
 		})
 
 		test('Fails if missing node name', () => {
-			const act = newNodeRegExp().exec('//p21:value')
+			const act = newNodeRegExp().exec('//p23:value')
 			expect(act).toEqual(null)
 		})
 
 		test('Fails if missing node name (version two)', () => {
-			const act = newNodeRegExp().exec('//p21.:value')
+			const act = newNodeRegExp().exec('//p23.:value')
 			expect(act).toEqual(null)
 		})
 
 		test('Fails if missing colon', () => {
-			const act = newNodeRegExp().exec('//p21.name')
+			const act = newNodeRegExp().exec('//p23.name')
 			expect(act).toEqual(null)
 		})
 	})
@@ -107,7 +107,7 @@ describe('p21', () => {
 			])
 		})
 
-		test('Parses non-nested single line node (lowercase p21)', () => {
+		test('Parses non-nested single line node (lowercase p23)', () => {
 			const file = createSvelteFilePath('LineDoc_NonNested_Lowercase')
 			const metadata = parse(file)
 
