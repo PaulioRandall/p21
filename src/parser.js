@@ -116,3 +116,5 @@ const insertNodeInto = (nodes, nodeNames, value) => {
 		nodes = nodes[name]
 	}
 }
+
+export default parse
