@@ -6,10 +6,17 @@ const defaultGlobOptions = {
 	nodir: true,
 }
 
-export const newNodeRegExp = (prefix = 'p23') => {
+export const newJavaScriptNodeRegexp = (prefix = 'p23') => {
 	return RegExp(
 		`^[^S\r\n]*//${prefix}((?:.[$a-zA-Z_][$a-zA-Z_0-9]*)+):(.*)$`,
-		'mgi'
+		'igm'
+	)
+}
+
+export const newHtmlNodeRegexp = (prefix = 'p23') => {
+	return RegExp(
+		`^[^S\r\n]*<!--${prefix}((?:.[$a-zA-Z_][$a-zA-Z_0-9]*)+):(.*?)-->`,
+		'igms'
 	)
 }
 
@@ -64,9 +71,25 @@ const extractNodes = (data, options) => {
 	// Examples:
 	//p23.name: Abc
 	//p23.group.name: Abc
+	const jsRegexp = newJavaScriptNodeRegexp(options.prefix)
+	const jsNodes = extractNodesWithRegexp(data, jsRegexp)
 
+	// Examples:
+	//<!--p23.name: Abc-->
+	//<!--p23.group.name: Abc-->
+	//<!--p23.group.name:
+	//  Abc
+	//-->
+	const htmlRegexp = newHtmlNodeRegexp(options.prefix)
+	const htmlNodes = extractNodesWithRegexp(data, htmlRegexp)
+
+	const n = joinNodeTrees(jsNodes, htmlNodes)
+	console.log(n)
+	return n
+}
+
+const extractNodesWithRegexp = (data, regexp) => {
 	const nodes = {}
-	const regexp = newNodeRegExp(options.prefix)
 	let next = null
 
 	while ((next = regexp.exec(data)) !== null) {
@@ -75,6 +98,24 @@ const extractNodes = (data, options) => {
 			parseNodeNames(next[1]),
 			next[2]
 		)
+	}
+
+	return nodes
+}
+
+const joinNodeTrees = (a, b) => {
+	if (typeof a !== 'object') {
+		return structuredClone(b)
+	}
+
+	const nodes = structuredClone(a)
+
+	for (const name in b) {
+		if (typeof b[name] === 'object') {
+			nodes[name] = joinNodeTrees(nodes[name], b[name])
+		} else {
+			nodes[name] = b[name]
+		}
 	}
 
 	return nodes

@@ -1,5 +1,5 @@
 import upath from 'upath'
-import { parse, newNodeRegExp } from './parser.js'
+import { parse, newJavaScriptNodeRegexp, newHtmlNodeRegexp } from './parser.js'
 
 const testdataDir = './src/testdata'
 
@@ -24,15 +24,15 @@ const parseToUnix = (f) => {
 }
 
 describe('p23', () => {
-	describe('newNodeRegExp', () => {
+	describe('newJavaScriptNodeRegexp', () => {
 		test('Non-nested node', () => {
-			const act = newNodeRegExp().exec('//p23.name:value')
+			const act = newJavaScriptNodeRegexp().exec('//p23.name:value')
 			const exp = expect.arrayContaining(['//p23.name:value', '.name', 'value'])
 			expect(act).toEqual(exp)
 		})
 
 		test('Custom prefix', () => {
-			const act = newNodeRegExp('my_custom_prefix').exec(
+			const act = newJavaScriptNodeRegexp('my_custom_prefix').exec(
 				'//my_custom_prefix.name:value'
 			)
 			const exp = expect.arrayContaining([
@@ -44,7 +44,7 @@ describe('p23', () => {
 		})
 
 		test('Nested node', () => {
-			const act = newNodeRegExp().exec('//p23.group.name:value')
+			const act = newJavaScriptNodeRegexp().exec('//p23.group.name:value')
 			const exp = expect.arrayContaining([
 				'//p23.group.name:value',
 				'.group.name',
@@ -54,7 +54,7 @@ describe('p23', () => {
 		})
 
 		test('Messed up but valid node names', () => {
-			const act = newNodeRegExp().exec(
+			const act = newJavaScriptNodeRegexp().exec(
 				'//p23.$$$12313___.__dsfjk12$$6389__$$:value'
 			)
 			const exp = expect.arrayContaining([
@@ -66,28 +66,100 @@ describe('p23', () => {
 		})
 
 		test('Empty value still returns entry', () => {
-			const act = newNodeRegExp().exec('//p23.name:')
+			const act = newJavaScriptNodeRegexp().exec('//p23.name:')
 			const exp = expect.arrayContaining(['//p23.name:', '.name', ''])
 			expect(act).toEqual(exp)
 		})
 
 		test('Fails if number first in node name', () => {
-			const act = newNodeRegExp().exec('//p23.1name:value')
+			const act = newJavaScriptNodeRegexp().exec('//p23.1name:value')
 			expect(act).toEqual(null)
 		})
 
 		test('Fails if missing node name', () => {
-			const act = newNodeRegExp().exec('//p23:value')
+			const act = newJavaScriptNodeRegexp().exec('//p23:value')
 			expect(act).toEqual(null)
 		})
 
 		test('Fails if missing node name (version two)', () => {
-			const act = newNodeRegExp().exec('//p23.:value')
+			const act = newJavaScriptNodeRegexp().exec('//p23.:value')
 			expect(act).toEqual(null)
 		})
 
 		test('Fails if missing colon', () => {
-			const act = newNodeRegExp().exec('//p23.name')
+			const act = newJavaScriptNodeRegexp().exec('//p23.name')
+			expect(act).toEqual(null)
+		})
+	})
+
+	describe('newHtmlNodeRegexp', () => {
+		test('Non-nested node', () => {
+			const act = newHtmlNodeRegexp().exec('<!--p23.name:value-->')
+			const exp = expect.arrayContaining([
+				'<!--p23.name:value-->',
+				'.name',
+				'value',
+			])
+			expect(act).toEqual(exp)
+		})
+
+		test('Custom prefix', () => {
+			const act = newHtmlNodeRegexp('my_custom_prefix').exec(
+				'<!--my_custom_prefix.name:value-->'
+			)
+			const exp = expect.arrayContaining([
+				'<!--my_custom_prefix.name:value-->',
+				'.name',
+				'value',
+			])
+			expect(act).toEqual(exp)
+		})
+
+		test('Nested node', () => {
+			const act = newHtmlNodeRegexp().exec('<!--p23.group.name:value-->')
+			const exp = expect.arrayContaining([
+				'<!--p23.group.name:value-->',
+				'.group.name',
+				'value',
+			])
+			expect(act).toEqual(exp)
+		})
+
+		test('Messed up but valid node names', () => {
+			const act = newHtmlNodeRegexp().exec(
+				'<!--p23.$$$12313___.__dsfjk12$$6389__$$:value-->'
+			)
+			const exp = expect.arrayContaining([
+				'<!--p23.$$$12313___.__dsfjk12$$6389__$$:value-->',
+				'.$$$12313___.__dsfjk12$$6389__$$',
+				'value',
+			])
+			expect(act).toEqual(exp)
+		})
+
+		test('Empty value still returns entry', () => {
+			const act = newHtmlNodeRegexp().exec('<!--p23.name:-->')
+			const exp = expect.arrayContaining(['<!--p23.name:-->', '.name', ''])
+			expect(act).toEqual(exp)
+		})
+
+		test('Fails if number first in node name', () => {
+			const act = newHtmlNodeRegexp().exec('<!--p23.1name:value-->')
+			expect(act).toEqual(null)
+		})
+
+		test('Fails if missing node name', () => {
+			const act = newHtmlNodeRegexp().exec('<!--p23:value-->')
+			expect(act).toEqual(null)
+		})
+
+		test('Fails if missing node name (version two)', () => {
+			const act = newHtmlNodeRegexp().exec('<!--p23.:value-->')
+			expect(act).toEqual(null)
+		})
+
+		test('Fails if missing colon', () => {
+			const act = newHtmlNodeRegexp().exec('<!--p23.name-->')
 			expect(act).toEqual(null)
 		})
 	})
@@ -228,6 +300,33 @@ describe('p23', () => {
 					...generateFileFields(file),
 					nodes: {
 						artist: 'Rhapsody of Fire',
+					},
+				},
+			])
+		})
+
+		test('Parses with HTML docs', () => {
+			const file = createSvelteFilePath('htmlDocs')
+			const metadata = parse(file)
+
+			expect(metadata).toEqual([
+				{
+					...generateFileFields(file),
+					nodes: {
+						type: 'Music',
+						music: {
+							type: 'Band',
+							band: {
+								name: 'Rhapsody of Fire',
+								genre: 'Symphonic Power Metal',
+								albums: `
+	[
+		"Rhapsody of Fire",
+		"Triumph or Agony",
+	]
+`,
+							},
+						},
 					},
 				},
 			])
