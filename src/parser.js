@@ -1,6 +1,10 @@
 import fs from 'fs'
 import path from 'path'
-import * as fsWalk from '@nodelib/fs.walk'
+import { globSync } from 'glob'
+
+const defaultGlobOptions = {
+	nodir: true,
+}
 
 export const newNodeRegExp = (prefix = 'p23') => {
 	return RegExp(
@@ -9,58 +13,40 @@ export const newNodeRegExp = (prefix = 'p23') => {
 	)
 }
 
-export const parse = (src, options = {}) => {
+export const parse = (glob = '**/*.svelte', options = {}) => {
 	try {
 		options = parseOptions(options)
-		return parseTree(src, options)
+		return parseTree(glob, options)
 	} catch (e) {
-		console.error(`[P23] Unable to parse '${src}'`)
+		console.error(`[P23] Unable to parse with glob '${glob}'`)
 		console.error(e)
 		return null
 	}
 }
 
-const parseOptions = ({ prefix }) => {
+const parseOptions = (options) => {
 	return {
-		prefix: prefix ? prefix : 'p23',
+		prefix: 'p23',
+		globOptions: defaultGlobOptions,
+		...options,
 	}
 }
 
-const parseTree = (src, options) => {
-	return listFiles(src) //
-		.filter(svelteFilesOnly)
+const parseTree = (glob, options) => {
+	return listFiles(glob, options) //
 		.map(fileInfo)
 		.map((f) => appendFileNodes(f, options))
 }
 
-const listFiles = (src) => {
-	if (isDirectory(src)) {
-		return fsWalk.walkSync(src)
-	}
-
-	return [
-		{
-			name: path.basename(src),
-			path: src,
-		},
-	]
+const listFiles = (glob, options) => {
+	return globSync(glob, options.globOptions).sort()
 }
 
-const isDirectory = (f) => {
-	return fs
-		.lstatSync(f) //
-		.isDirectory()
-}
-
-const svelteFilesOnly = (f) => {
-	return f.name.endsWith('.svelte')
-}
-
-const fileInfo = (f) => {
+const fileInfo = (filePath) => {
 	return {
-		name: f.name,
-		relPath: f.path,
-		absPath: path.resolve(f.path),
+		name: path.basename(filePath),
+		relPath: filePath,
+		absPath: path.resolve(filePath),
 	}
 }
 

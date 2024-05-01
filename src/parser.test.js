@@ -92,7 +92,7 @@ describe('p23', () => {
 		})
 	})
 
-	describe('parse()', () => {
+	describe('parse', () => {
 		test('Parses non-nested single line node', () => {
 			const file = createSvelteFilePath('LineDoc_NonNested')
 			const metadata = parse(file)
@@ -195,7 +195,7 @@ describe('p23', () => {
 
 		test('Parses directory', () => {
 			const dir = upath.join(`${testdataDir}/dir`)
-			const metadata = parse(dir)
+			const metadata = parse(dir + '/**/*.svelte')
 
 			expect(metadata).toEqual([
 				{
