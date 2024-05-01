@@ -83,9 +83,7 @@ const extractNodes = (data, options) => {
 	const htmlRegexp = newHtmlNodeRegexp(options.prefix)
 	const htmlNodes = extractNodesWithRegexp(data, htmlRegexp)
 
-	const n = joinNodeTrees(jsNodes, htmlNodes)
-	console.log(n)
-	return n
+	return joinNodeTrees(jsNodes, htmlNodes)
 }
 
 const extractNodesWithRegexp = (data, regexp) => {
