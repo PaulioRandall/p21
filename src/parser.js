@@ -1,26 +1,13 @@
 import fs from 'fs'
 import path from 'path'
 import { globSync } from 'glob'
+import regexp from './regexp.js'
 
 const defaultGlobOptions = {
 	nodir: true,
 }
 
-export const newJavaScriptNodeRegexp = (prefix = 'p23') => {
-	return RegExp(
-		`^[^S\r\n]*//${prefix}((?:.[$a-zA-Z_][$a-zA-Z_0-9]*)+):(.*)$`,
-		'igm'
-	)
-}
-
-export const newHtmlNodeRegexp = (prefix = 'p23') => {
-	return RegExp(
-		`^[^S\r\n]*<!--${prefix}((?:.[$a-zA-Z_][$a-zA-Z_0-9]*)+):(.*?)-->`,
-		'igms'
-	)
-}
-
-export const parse = (glob = '**/*.svelte', options = {}) => {
+export default (glob = '**/*.svelte', options = {}) => {
 	try {
 		options = parseOptions(options)
 		return parseTree(glob, options)
@@ -71,7 +58,7 @@ const extractNodes = (data, options) => {
 	// Examples:
 	//p23.name: Abc
 	//p23.group.name: Abc
-	const jsRegexp = newJavaScriptNodeRegexp(options.prefix)
+	const jsRegexp = regexp.newJsLine(options.prefix)
 	const jsNodes = extractNodesWithRegexp(data, jsRegexp)
 
 	// Examples:
@@ -80,7 +67,7 @@ const extractNodes = (data, options) => {
 	//<!--p23.group.name:
 	//  Abc
 	//-->
-	const htmlRegexp = newHtmlNodeRegexp(options.prefix)
+	const htmlRegexp = regexp.newHtml(options.prefix)
 	const htmlNodes = extractNodesWithRegexp(data, htmlRegexp)
 
 	return joinNodeTrees(jsNodes, htmlNodes)
