@@ -24,8 +24,20 @@ const parseToUnix = (f) => {
 
 describe('parser.js', () => {
 	describe('parse', () => {
+		test('Parses no docs', () => {
+			const file = createSvelteFilePath('NoDocs')
+			const metadata = parse(file)
+
+			expect(metadata).toEqual([
+				{
+					...generateFileFields(file),
+					nodes: {},
+				},
+			])
+		})
+
 		test('Parses non-nested single line node', () => {
-			const file = createSvelteFilePath('LineDoc_NonNested')
+			const file = createSvelteFilePath('JsLine_NonNested')
 			const metadata = parse(file)
 
 			expect(metadata).toEqual([
@@ -39,7 +51,7 @@ describe('parser.js', () => {
 		})
 
 		test('Parses non-nested single line node (lowercase p23)', () => {
-			const file = createSvelteFilePath('LineDoc_NonNested_Lowercase')
+			const file = createSvelteFilePath('JsLine_NonNested_Lowercase')
 			const metadata = parse(file)
 
 			expect(metadata).toEqual([
@@ -53,7 +65,7 @@ describe('parser.js', () => {
 		})
 
 		test('Parses multiple non-nested single line nodes', () => {
-			const file = createSvelteFilePath('LineDoc_NonNested_Multiple')
+			const file = createSvelteFilePath('JsLine_NonNested_Multiple')
 			const metadata = parse(file)
 
 			expect(metadata).toEqual([
@@ -69,7 +81,7 @@ describe('parser.js', () => {
 		})
 
 		test('Parses nested single line node', () => {
-			const file = createSvelteFilePath('LineDoc_Nested')
+			const file = createSvelteFilePath('JsLine_Nested')
 			const metadata = parse(file)
 
 			expect(metadata).toEqual([
@@ -85,7 +97,7 @@ describe('parser.js', () => {
 		})
 
 		test('Parses nested single line node 2', () => {
-			const file = createSvelteFilePath('LineDoc_Nested_2')
+			const file = createSvelteFilePath('JsLine_Nested_2')
 			const metadata = parse(file)
 
 			expect(metadata).toEqual([
@@ -103,7 +115,7 @@ describe('parser.js', () => {
 		})
 
 		test('Parses comprehensive set of nested and non-nested nodes', () => {
-			const file = createSvelteFilePath('LineDoc_Complex')
+			const file = createSvelteFilePath('JsLine_Complex')
 			const metadata = parse(file)
 
 			expect(metadata).toEqual([
@@ -149,7 +161,7 @@ describe('parser.js', () => {
 		})
 
 		test('Parses with option', () => {
-			const file = createSvelteFilePath('LineDoc_Option_Prefix')
+			const file = createSvelteFilePath('JsLine_Option_Prefix')
 			const metadata = parse(file, {
 				prefix: 'my_custom_prefix',
 			})
@@ -190,22 +202,33 @@ describe('parser.js', () => {
 				},
 			])
 		})
-		/*
-		test('Parses block comment on a signle line', () => {
-			const file = createSvelteFilePath('BlockDoc_SingleLine')
+
+		test('Parses block comment on a single line', () => {
+			const file = createSvelteFilePath('JsBlock_Line')
 			const metadata = parse(file)
 
 			expect(metadata).toEqual([
 				{
 					...generateFileFields(file),
 					nodes: {
-						bands: {
-							artist: 'Rhapsody of Fire',
-						},
+						artist: 'Rhapsody of Fire',
 					},
 				},
 			])
 		})
-		*/
+
+		test('Parses block comment on multiple lines', () => {
+			const file = createSvelteFilePath('JsBlock_Lines')
+			const metadata = parse(file)
+
+			expect(metadata).toEqual([
+				{
+					...generateFileFields(file),
+					nodes: {
+						artist: '\n\t\tRhapsody of Fire\n\t',
+					},
+				},
+			])
+		})
 	})
 })

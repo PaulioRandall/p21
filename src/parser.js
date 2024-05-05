@@ -55,22 +55,31 @@ const readWholeFile = (absPath) => {
 }
 
 const extractNodes = (data, options) => {
-	// Examples:
 	//p23.name: Abc
 	//p23.group.name: Abc
-	const jsRegexp = regexp.newJsLine(options.prefix)
-	const jsNodes = extractNodesWithRegexp(data, jsRegexp)
+	const jsLineRegexp = regexp.newJsLine(options.prefix)
+	const jsLineNodes = extractNodesWithRegexp(data, jsLineRegexp)
 
-	// Examples:
+	/*p23.name: Abc*/
+	/*p23.group.name:
+		Abc
+		Xyz
+	*/
+	const jsBlockRegexp = regexp.newJsBlock(options.prefix)
+	const jsBlockNodes = extractNodesWithRegexp(data, jsBlockRegexp)
+
+	const jsNodes = mergeNodes(jsLineNodes, jsBlockNodes)
+
 	//<!--p23.name: Abc-->
 	//<!--p23.group.name: Abc-->
 	//<!--p23.group.name:
 	//  Abc
+	//	Xyz
 	//-->
 	const htmlRegexp = regexp.newHtml(options.prefix)
 	const htmlNodes = extractNodesWithRegexp(data, htmlRegexp)
 
-	return joinNodeTrees(jsNodes, htmlNodes)
+	return mergeNodes(jsNodes, htmlNodes)
 }
 
 const extractNodesWithRegexp = (data, regexp) => {
@@ -88,22 +97,20 @@ const extractNodesWithRegexp = (data, regexp) => {
 	return nodes
 }
 
-const joinNodeTrees = (a, b) => {
-	if (typeof a !== 'object') {
-		return structuredClone(b)
-	}
-
-	const nodes = structuredClone(a)
-
-	for (const name in b) {
-		if (typeof b[name] === 'object') {
-			nodes[name] = joinNodeTrees(nodes[name], b[name])
+const mergeNodes = (dst, src) => {
+	for (const k in src) {
+		if (isObject(dst[k]) && isObject(src[k])) {
+			mergeNodes(dst[k], src[k])
 		} else {
-			nodes[name] = b[name]
+			dst[k] = src[k]
 		}
 	}
 
-	return nodes
+	return dst
+}
+
+const isObject = (v) => {
+	return !!v && typeof v === 'object' && !Array.isArray(v)
 }
 
 const parseNodeNames = (nodeNames) => {
