@@ -59,6 +59,7 @@ const extractNodes = (data, options) => {
 	//p23.group.name: Abc
 	const jsLineRegexp = regexp.newJsLine(options.prefix)
 	const jsLineNodes = extractNodesWithRegexp(data, jsLineRegexp)
+	tidyJsLineNodes(jsLineNodes)
 
 	/*p23.name: Abc*/
 	/*p23.group.name:
@@ -95,6 +96,18 @@ const extractNodesWithRegexp = (data, regexp) => {
 	}
 
 	return nodes
+}
+
+const tidyJsLineNodes = (nodes) => {
+	for (const k in nodes) {
+		const v = nodes[k]
+
+		if (isObject(v)) {
+			tidyJsLineNodes(v)
+		} else {
+			nodes[k] = v.replace(/^[^\S\r\n]*\/\//gm, '')
+		}
+	}
 }
 
 const mergeNodes = (dst, src) => {

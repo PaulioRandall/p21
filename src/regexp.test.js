@@ -8,6 +8,25 @@ describe('regexp.js', () => {
 			expect(act).toEqual(exp)
 		})
 
+		test('Multiple single line comments in series', () => {
+			const input = [
+				'  //p23.description:',
+				'  // Abc',
+				'  // 123',
+				'  //',
+				'  // Xyz',
+			].join('\n')
+
+			const expValue = ['', '  // Abc', '  // 123', '  //', '  // Xyz'].join(
+				'\n'
+			)
+
+			const act = regexp.newJsLine().exec(input)
+
+			const exp = expect.arrayContaining([input, '.description', expValue])
+			expect(act).toEqual(exp)
+		})
+
 		test('Custom prefix', () => {
 			const act = regexp
 				.newJsLine('my_custom_prefix')
@@ -70,7 +89,7 @@ describe('regexp.js', () => {
 	})
 
 	const multiLineKey = '.name'
-	const multiLineValue = 'value\n\tAbc\n\tXyz\n\t'
+	const multiLineValue = '\n\tvalue\n\tAbc\n\tXyz\n\t'
 	const multiLineInput = `p23${multiLineKey}:${multiLineValue}`
 
 	describe('newJsBlock', () => {

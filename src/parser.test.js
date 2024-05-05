@@ -50,6 +50,21 @@ describe('parser.js', () => {
 			])
 		})
 
+		test('Parses multiple lines in series that represent a single node', () => {
+			const file = createSvelteFilePath('JsLine_MultiLine')
+			const metadata = parse(file)
+
+			expect(metadata).toEqual([
+				{
+					...generateFileFields(file),
+					nodes: {
+						name: 'Meh',
+						description: [' Abc', ' a', ' b', '', ' y', ' z'].join('\n'),
+					},
+				},
+			])
+		})
+
 		test('Parses non-nested single line node (lowercase p23)', () => {
 			const file = createSvelteFilePath('JsLine_NonNested_Lowercase')
 			const metadata = parse(file)
