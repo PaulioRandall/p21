@@ -4,7 +4,7 @@ A simple tool for adding parsable metadata as comments within Svelte components.
 
 ## Made to be Plundered
 
-This library is made to be plundered for whatever you like as long as you adhere to the permissive MIT license found within.
+Do whatever you like as long as you adhere to the permissive MIT license found within.
 
 ## Example
 

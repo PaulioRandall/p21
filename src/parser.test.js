@@ -14,8 +14,8 @@ const generateFileFields = (file) => {
 	}
 }
 
-const parseToUnix = (f) => {
-	return parse(f).map((m) => {
+const parseToUnix = (file) => {
+	return parse({ glob: file }).map((m) => {
 		m.relPath = upath.toUnix(m.relPath)
 		m.absPath = upath.toUnix(m.absPath)
 		return m
@@ -26,7 +26,7 @@ describe('parser.js', () => {
 	describe('parse', () => {
 		test('Parses no docs', () => {
 			const file = createSvelteFilePath('NoDocs')
-			const metadata = parse(file)
+			const metadata = parse({ glob: file })
 
 			expect(metadata).toEqual([
 				{
@@ -38,7 +38,7 @@ describe('parser.js', () => {
 
 		test('Parses non-nested single line node', () => {
 			const file = createSvelteFilePath('JsLine_NonNested')
-			const metadata = parse(file)
+			const metadata = parse({ glob: file })
 
 			expect(metadata).toEqual([
 				{
@@ -52,7 +52,7 @@ describe('parser.js', () => {
 
 		test('Parses multiple lines in series that represent a single node', () => {
 			const file = createSvelteFilePath('JsLine_MultiLine')
-			const metadata = parse(file)
+			const metadata = parse({ glob: file })
 
 			expect(metadata).toEqual([
 				{
@@ -67,7 +67,7 @@ describe('parser.js', () => {
 
 		test('Parses non-nested single line node (lowercase p23)', () => {
 			const file = createSvelteFilePath('JsLine_NonNested_Lowercase')
-			const metadata = parse(file)
+			const metadata = parse({ glob: file })
 
 			expect(metadata).toEqual([
 				{
@@ -81,7 +81,7 @@ describe('parser.js', () => {
 
 		test('Parses multiple non-nested single line nodes', () => {
 			const file = createSvelteFilePath('JsLine_NonNested_Multiple')
-			const metadata = parse(file)
+			const metadata = parse({ glob: file })
 
 			expect(metadata).toEqual([
 				{
@@ -97,7 +97,7 @@ describe('parser.js', () => {
 
 		test('Parses nested single line node', () => {
 			const file = createSvelteFilePath('JsLine_Nested')
-			const metadata = parse(file)
+			const metadata = parse({ glob: file })
 
 			expect(metadata).toEqual([
 				{
@@ -113,7 +113,7 @@ describe('parser.js', () => {
 
 		test('Parses nested single line node 2', () => {
 			const file = createSvelteFilePath('JsLine_Nested_2')
-			const metadata = parse(file)
+			const metadata = parse({ glob: file })
 
 			expect(metadata).toEqual([
 				{
@@ -131,7 +131,7 @@ describe('parser.js', () => {
 
 		test('Parses comprehensive set of nested and non-nested nodes', () => {
 			const file = createSvelteFilePath('JsLine_Complex')
-			const metadata = parse(file)
+			const metadata = parse({ glob: file })
 
 			expect(metadata).toEqual([
 				{
@@ -153,7 +153,7 @@ describe('parser.js', () => {
 
 		test('Parses directory', () => {
 			const dir = upath.join(`${testdataDir}/dir`)
-			const metadata = parse(dir + '/**/*.svelte')
+			const metadata = parse({ glob: dir + '/**/*.svelte' })
 
 			expect(metadata).toEqual([
 				{
@@ -177,7 +177,8 @@ describe('parser.js', () => {
 
 		test('Parses with option', () => {
 			const file = createSvelteFilePath('JsLine_Option_Prefix')
-			const metadata = parse(file, {
+			const metadata = parse({
+				glob: file,
 				prefix: 'my_custom_prefix',
 			})
 
@@ -193,7 +194,7 @@ describe('parser.js', () => {
 
 		test('Parses with HTML docs', () => {
 			const file = createSvelteFilePath('htmlDocs')
-			const metadata = parse(file)
+			const metadata = parse({ glob: file })
 
 			expect(metadata).toEqual([
 				{
@@ -220,7 +221,7 @@ describe('parser.js', () => {
 
 		test('Parses block comment on a single line', () => {
 			const file = createSvelteFilePath('JsBlock_Line')
-			const metadata = parse(file)
+			const metadata = parse({ glob: file })
 
 			expect(metadata).toEqual([
 				{
@@ -234,7 +235,7 @@ describe('parser.js', () => {
 
 		test('Parses block comment on multiple lines', () => {
 			const file = createSvelteFilePath('JsBlock_Lines')
-			const metadata = parse(file)
+			const metadata = parse({ glob: file })
 
 			expect(metadata).toEqual([
 				{

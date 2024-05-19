@@ -7,10 +7,10 @@ const defaultGlobOptions = {
 	nodir: true,
 }
 
-export default (glob = '**/*.svelte', options = {}) => {
+export default (options = {}) => {
 	try {
 		options = parseOptions(options)
-		return parseTree(glob, options)
+		return parseTree(options)
 	} catch (e) {
 		console.error(`[P23] Unable to parse with glob '${glob}'`)
 		console.error(e)
@@ -21,19 +21,20 @@ export default (glob = '**/*.svelte', options = {}) => {
 const parseOptions = (options) => {
 	return {
 		prefix: 'p23',
+		glob: '**/*.svelte',
 		globOptions: defaultGlobOptions,
 		...options,
 	}
 }
 
-const parseTree = (glob, options) => {
-	return listFiles(glob, options) //
+const parseTree = (options) => {
+	return listFiles(options) //
 		.map(fileInfo)
 		.map((f) => appendFileNodes(f, options))
 }
 
-const listFiles = (glob, options) => {
-	return globSync(glob, options.globOptions).sort()
+const listFiles = (options) => {
+	return globSync(options.glob, options.globOptions).sort()
 }
 
 const fileInfo = (filePath) => {
