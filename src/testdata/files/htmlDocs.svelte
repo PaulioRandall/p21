@@ -1,12 +1,12 @@
 <script>
-	//p23.type:Music
-	//p23.music.type:Band
+	//p23.type: Music
+	//p23.music.type: Band
 </script>
 
-<!--p23.music.band.genre:Symphonic Power Metal-->
+<!--p23.music.band.genre: Symphonic Power Metal-->
 
 <div>
-	<!--p23.music.band.name:Rhapsody of Fire-->
+	<!--p23.music.band.name: Rhapsody of Fire-->
 </div>
 
 <!--p23.music.band.albums:

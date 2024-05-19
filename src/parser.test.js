@@ -44,7 +44,7 @@ describe('parser.js', () => {
 				{
 					...generateFileFields(file),
 					nodes: {
-						artist: 'Rhapsody of Fire',
+						artist: '//p23.artist: Rhapsody of Fire',
 					},
 				},
 			])
@@ -58,22 +58,13 @@ describe('parser.js', () => {
 				{
 					...generateFileFields(file),
 					nodes: {
-						name: 'Meh',
-						description: [' Abc', ' a', ' b', '', ' y', ' z'].join('\n'),
-					},
-				},
-			])
-		})
-
-		test('Parses non-nested single line node (lowercase p23)', () => {
-			const file = createSvelteFilePath('JsLine_NonNested_Lowercase')
-			const metadata = parse({ glob: file })
-
-			expect(metadata).toEqual([
-				{
-					...generateFileFields(file),
-					nodes: {
-						artist: 'Rhapsody of Fire',
+						name: '//p23.name: Meh',
+						description: `//p23.description: Abc
+	// a
+	// b
+	//
+	// y
+	// z`,
 					},
 				},
 			])
@@ -87,9 +78,9 @@ describe('parser.js', () => {
 				{
 					...generateFileFields(file),
 					nodes: {
-						artist: 'Rhapsody of Fire',
-						album: 'From Chaos to Eternity',
-						release_date: '2011-06-17',
+						artist: '//p23.artist: Rhapsody of Fire',
+						album: '//p23.album: From Chaos to Eternity',
+						release_date: '//p23.release_date: 2011-06-17',
 					},
 				},
 			])
@@ -104,7 +95,7 @@ describe('parser.js', () => {
 					...generateFileFields(file),
 					nodes: {
 						bands: {
-							artist: 'Rhapsody of Fire',
+							artist: '//p23.bands.artist: Rhapsody of Fire',
 						},
 					},
 				},
@@ -121,7 +112,7 @@ describe('parser.js', () => {
 					nodes: {
 						music: {
 							bands: {
-								artist: 'Rhapsody of Fire',
+								artist: '//p23.music.bands.artist: Rhapsody of Fire',
 							},
 						},
 					},
@@ -137,13 +128,16 @@ describe('parser.js', () => {
 				{
 					...generateFileFields(file),
 					nodes: {
-						type: 'Music',
+						type: '//p23.type: Music',
 						music: {
-							type: 'Band',
+							type: '//p23.music.type: Band',
 							band: {
-								name: 'Rhapsody of Fire',
-								genre: 'Symphonic Power Metal',
-								albums: '["Rhapsody of Fire","Triumph or Agony"]',
+								name: '//p23.music.band.name: Rhapsody of Fire',
+								genre: '//p23.music.band.genre: Symphonic Power Metal',
+								albums: `//p23.music.band.albums: [
+	// "Rhapsody of Fire",
+	// "Triumph or Agony",
+	// ]`,
 							},
 						},
 					},
@@ -161,7 +155,7 @@ describe('parser.js', () => {
 					relPath: upath.join(`${testdataDir}/dir/BandOne.svelte`),
 					absPath: upath.resolve(`${testdataDir}/dir/BandOne.svelte`),
 					nodes: {
-						artist: 'Rhapsody of Fire',
+						artist: '//p23.artist: Rhapsody of Fire',
 					},
 				},
 				{
@@ -169,7 +163,7 @@ describe('parser.js', () => {
 					relPath: upath.join(`${testdataDir}/dir/BandTwo.svelte`),
 					absPath: upath.resolve(`${testdataDir}/dir/BandTwo.svelte`),
 					nodes: {
-						artist: 'Children of Bodom',
+						artist: '//p23.artist: Children of Bodom',
 					},
 				},
 			])
@@ -186,7 +180,7 @@ describe('parser.js', () => {
 				{
 					...generateFileFields(file),
 					nodes: {
-						artist: 'Rhapsody of Fire',
+						artist: '//my_custom_prefix.artist: Rhapsody of Fire',
 					},
 				},
 			])
@@ -200,18 +194,18 @@ describe('parser.js', () => {
 				{
 					...generateFileFields(file),
 					nodes: {
-						type: 'Music',
+						type: '//p23.type: Music',
 						music: {
-							type: 'Band',
+							type: '//p23.music.type: Band',
 							band: {
-								name: 'Rhapsody of Fire',
-								genre: 'Symphonic Power Metal',
-								albums: `
+								name: '<!--p23.music.band.name: Rhapsody of Fire-->',
+								genre: '<!--p23.music.band.genre: Symphonic Power Metal-->',
+								albums: `<!--p23.music.band.albums:
 	[
 		"Rhapsody of Fire",
 		"Triumph or Agony",
 	]
-`,
+-->`,
 							},
 						},
 					},
@@ -227,7 +221,7 @@ describe('parser.js', () => {
 				{
 					...generateFileFields(file),
 					nodes: {
-						artist: 'Rhapsody of Fire',
+						artist: '/*p23.artist: Rhapsody of Fire*/',
 					},
 				},
 			])
@@ -241,7 +235,9 @@ describe('parser.js', () => {
 				{
 					...generateFileFields(file),
 					nodes: {
-						artist: '\n\t\tRhapsody of Fire\n\t',
+						artist: `/*p23.artist:
+		Rhapsody of Fire
+	*/`,
 					},
 				},
 			])

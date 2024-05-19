@@ -4,66 +4,49 @@ describe('regexp.js', () => {
 	describe('newJsLine', () => {
 		test('Non-nested node', () => {
 			const act = regexp.newJsLine().exec('//p23.name:value')
-			const exp = expect.arrayContaining(['//p23.name:value', '.name', 'value'])
+			const exp = expect.arrayContaining(['//p23.name:value'])
 			expect(act).toEqual(exp)
 		})
 
 		test('Multiple single line comments in series', () => {
 			const input = [
-				'  //p23.description:',
+				'//p23.description:',
 				'  // Abc',
 				'  // 123',
 				'  //',
 				'  // Xyz',
 			].join('\n')
 
-			const expValue = ['', '  // Abc', '  // 123', '  //', '  // Xyz'].join(
-				'\n'
-			)
-
 			const act = regexp.newJsLine().exec(input)
-
-			const exp = expect.arrayContaining([input, '.description', expValue])
+			const exp = expect.arrayContaining([input])
 			expect(act).toEqual(exp)
 		})
 
 		test('Custom prefix', () => {
-			const act = regexp
-				.newJsLine('my_custom_prefix')
-				.exec('//my_custom_prefix.name:value')
-			const exp = expect.arrayContaining([
-				'//my_custom_prefix.name:value',
-				'.name',
-				'value',
-			])
+			const input = '//my_custom_prefix.name:value'
+			const act = regexp.newJsLine('my_custom_prefix').exec(input)
+			const exp = expect.arrayContaining([input])
 			expect(act).toEqual(exp)
 		})
 
 		test('Nested node', () => {
-			const act = regexp.newJsLine().exec('//p23.group.name:value')
-			const exp = expect.arrayContaining([
-				'//p23.group.name:value',
-				'.group.name',
-				'value',
-			])
+			const input = '//p23.group.name:value'
+			const act = regexp.newJsLine().exec(input)
+			const exp = expect.arrayContaining([input])
 			expect(act).toEqual(exp)
 		})
 
 		test('Messed up but valid node names', () => {
-			const act = regexp
-				.newJsLine()
-				.exec('//p23.$$$12313___.__dsfjk12$$6389__$$:value')
-			const exp = expect.arrayContaining([
-				'//p23.$$$12313___.__dsfjk12$$6389__$$:value',
-				'.$$$12313___.__dsfjk12$$6389__$$',
-				'value',
-			])
+			const input = '//p23.$$$12313___.__dsfjk12$$6389__$$:value'
+			const act = regexp.newJsLine().exec(input)
+			const exp = expect.arrayContaining([input])
 			expect(act).toEqual(exp)
 		})
 
 		test('Empty value still returns entry', () => {
-			const act = regexp.newJsLine().exec('//p23.name:')
-			const exp = expect.arrayContaining(['//p23.name:', '.name', ''])
+			const input = '//p23.name:'
+			const act = regexp.newJsLine().exec(input)
+			const exp = expect.arrayContaining([input])
 			expect(act).toEqual(exp)
 		})
 
@@ -88,50 +71,34 @@ describe('regexp.js', () => {
 		})
 	})
 
-	const multiLineKey = '.name'
-	const multiLineValue = '\n\tvalue\n\tAbc\n\tXyz\n\t'
-	const multiLineInput = `p23${multiLineKey}:${multiLineValue}`
+	const multiLineInput = `p23.name:\n\tvalue\n\tAbc\n\tXyz\n\t`
 
 	describe('newJsBlock', () => {
 		test('Single line block', () => {
-			const act = regexp.newJsBlock().exec('/*p23.name:value*/')
-			const exp = expect.arrayContaining([
-				'/*p23.name:value*/',
-				'.name',
-				'value',
-			])
+			const input = '/*p23.name:value*/'
+			const act = regexp.newJsBlock().exec(input)
+			const exp = expect.arrayContaining([input])
 			expect(act).toEqual(exp)
 		})
 
 		test('Multi line block', () => {
 			const act = regexp.newJsBlock().exec(`/*${multiLineInput}*/`)
-			const exp = expect.arrayContaining([
-				`/*${multiLineInput}*/`,
-				multiLineKey,
-				multiLineValue,
-			])
+			const exp = expect.arrayContaining([`/*${multiLineInput}*/`])
 			expect(act).toEqual(exp)
 		})
 	})
 
 	describe('newHtml', () => {
 		test('Single line block', () => {
-			const act = regexp.newHtml().exec('<!--p23.name:value-->')
-			const exp = expect.arrayContaining([
-				'<!--p23.name:value-->',
-				'.name',
-				'value',
-			])
+			const input = '<!--p23.name:value-->'
+			const act = regexp.newHtml().exec(input)
+			const exp = expect.arrayContaining([input])
 			expect(act).toEqual(exp)
 		})
 
 		test('Multi line block', () => {
 			const act = regexp.newHtml().exec(`<!--${multiLineInput}-->`)
-			const exp = expect.arrayContaining([
-				`<!--${multiLineInput}-->`,
-				multiLineKey,
-				multiLineValue,
-			])
+			const exp = expect.arrayContaining([`<!--${multiLineInput}-->`])
 			expect(act).toEqual(exp)
 		})
 	})

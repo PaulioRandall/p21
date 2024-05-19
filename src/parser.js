@@ -12,7 +12,7 @@ export default (options = {}) => {
 		options = parseOptions(options)
 		return parseTree(options)
 	} catch (e) {
-		console.error(`[P23] Unable to parse with glob '${glob}'`)
+		console.error(`[P23] Unable to parse with glob '${options.glob}'`)
 		console.error(e)
 		return null
 	}
@@ -60,7 +60,6 @@ const extractNodes = (data, options) => {
 	//p23.group.name: Abc
 	const jsLineRegexp = regexp.newJsLine(options.prefix)
 	const jsLineNodes = extractNodesWithRegexp(data, jsLineRegexp)
-	tidyJsLineNodes(jsLineNodes)
 
 	/*p23.name: Abc*/
 	/*p23.group.name:
@@ -92,7 +91,7 @@ const extractNodesWithRegexp = (data, regexp) => {
 		insertNodeInto(
 			nodes, //
 			parseNodeNames(next[1]),
-			next[2]
+			next[0]
 		)
 	}
 
