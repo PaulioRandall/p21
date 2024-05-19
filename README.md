@@ -137,8 +137,9 @@ For information on glob and glob options see [NPM _glob_ package](https://www.np
 import p23 from 'p23'
 
 p23({
-  // Custom prefix for nodes. 
-  prefix: "p23",
+  // Custom prefix for nodes.
+  // You could use "@" to parse "//@name: value" for example.
+  prefix: "p23.",
 
   // See https://github.com/isaacs/node-glob.
   // For SvelteKit packaged libraries you would use
@@ -154,6 +155,6 @@ p23({
 
 1. Doc strings include the comment delimters unless cleaned with `cleanFileNode` or by your own means.
 2. Cleaning and managing the whitespace in node values is your responsibility.
-3. Path segments must adhere to: `^[$a-zA-Z_][$a-zA-Z_0-9]*$` (this could be extended to include any character allowed within an object field name).
+3. Path segments must adhere to: `^[$@a-zA-Z_][$@a-zA-Z0-9_\-]*$`. This list may be extended in future to include almost any string character.
 4. Yes, it will parse block comments in CSS nodes too.
 5. "Don't have a cow, Man!" - Bart Simpson

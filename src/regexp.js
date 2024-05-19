@@ -1,22 +1,23 @@
-const newJsLine = (prefix = 'p23') => {
+const pathSegmentRule = String.raw`[$@a-zA-Z_][$@a-zA-Z0-9_\-]`
+const pathRule = String.raw`(${pathSegmentRule}*(?:\.${pathSegmentRule}*)*)`
+const wsRule = String.raw`[^\S\n]*` // Except linefeeds
+
+const newJsLine = (prefix = 'p23.') => {
+	prefix = String.raw`${prefix}`
 	return RegExp(
-		String.raw`\/\/${prefix}((?:\.[$a-zA-Z_][$a-zA-Z_0-9]*)+):[^\n]*(?:\n[^\S\r\n]*\/\/(?!${prefix})[^\n]*)*`,
+		String.raw`\/\/${prefix}${pathRule}:[^\n]*(?:\n${wsRule}\/\/(?!${prefix})[^\n]*)*`,
 		'igms'
 	)
 }
 
-const newJsBlock = (prefix = 'p23') => {
-	return RegExp(
-		String.raw`\/\*${prefix}((?:\.[$a-zA-Z_][$a-zA-Z_0-9]*)+):.*?\*\/`,
-		'igms'
-	)
+const newJsBlock = (prefix = 'p23.') => {
+	prefix = String.raw`${prefix}`
+	return RegExp(String.raw`\/\*${prefix}${pathRule}:.*?\*\/`, 'igms')
 }
 
-const newHtml = (prefix = 'p23') => {
-	return RegExp(
-		String.raw`<!--${prefix}((?:\.[$a-zA-Z_][$a-zA-Z_0-9]*)+):.*?-->`,
-		'igms'
-	)
+const newHtml = (prefix = 'p23.') => {
+	prefix = String.raw`${prefix}`
+	return RegExp(String.raw`<!--${prefix}${pathRule}:.*?-->`, 'igms')
 }
 
 export default {

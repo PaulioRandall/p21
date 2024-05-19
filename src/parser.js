@@ -20,7 +20,7 @@ export default (options = {}) => {
 
 const parseOptions = (options) => {
 	return {
-		prefix: 'p23',
+		prefix: 'p23.',
 		glob: '**/*.svelte',
 		globOptions: defaultGlobOptions,
 		...options,

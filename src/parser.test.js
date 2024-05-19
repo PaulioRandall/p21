@@ -173,14 +173,14 @@ describe('parser.js', () => {
 			const file = createSvelteFilePath('JsLine_Option_Prefix')
 			const metadata = parse({
 				glob: file,
-				prefix: 'my_custom_prefix',
+				prefix: '@',
 			})
 
 			expect(metadata).toEqual([
 				{
 					...generateFileFields(file),
 					nodes: {
-						artist: '//my_custom_prefix.artist: Rhapsody of Fire',
+						artist: '//@artist: Rhapsody of Fire',
 					},
 				},
 			])

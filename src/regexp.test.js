@@ -24,7 +24,7 @@ describe('regexp.js', () => {
 
 		test('Custom prefix', () => {
 			const input = '//my_custom_prefix.name:value'
-			const act = regexp.newJsLine('my_custom_prefix').exec(input)
+			const act = regexp.newJsLine('my_custom_prefix.').exec(input)
 			const exp = expect.arrayContaining([input])
 			expect(act).toEqual(exp)
 		})
