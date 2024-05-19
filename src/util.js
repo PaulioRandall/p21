@@ -1,19 +1,33 @@
-export const cleanNodes = () => {
-	// TODO: Detect node type and parse accordingly
-	// HTML block: <!--
-	// JS block: /*
-	// JS line: //
+export const parseNodeValue = (s) => {
+	if (s.startsWith('<!--')) {
+		return parseHtmlBlockValue(s)
+	} else if (s.startsWith('/*')) {
+		// TODO
+	} else if (s.startsWith('//')) {
+		// TODO
+	}
+
+	throw new Error(`[P23:parseNode] Enable to identify node type:\n${s}`)
 }
 
-export const cleanHtmlBlockNode = () => {}
+export const parseHtmlBlockValue = (s) => {
+	// <!--p23.name: value -->
+	return delimitBlock(s, '-->')
+}
 
-export const cleanJsBlockNode = () => {}
+export const parseJsBlockValue = (s) => {}
 
-export const cleanJsLineNode = () => {}
+export const parseJsLineValue = (s) => {}
+
+const delimitBlock = (s, suffix) => {
+	const from = s.indexOf(':') + 1
+	const to = s.length - suffix.length
+	return s.slice(from, to).trim()
+}
 
 export default {
-	cleanNodes,
-	cleanHtmlBlockNode,
-	cleanJsBlockNode,
-	cleanJsLineNode,
+	parseNodeValue,
+	parseHtmlBlockValue,
+	parseJsBlockValue,
+	parseJsLineValue,
 }
