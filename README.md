@@ -68,17 +68,20 @@ const metadata = [
 ]
 ```
 
-For glob and glob options information see [NPM _glob_ package](https://www.npmjs.com/package/glob) ([Github](https://github.com/isaacs/node-glob)).
+For information on glob and glob options see [NPM _glob_ package](https://www.npmjs.com/package/glob) ([Github](https://github.com/isaacs/node-glob)). I should hide this library behind the API, as an implementation detail, but CBA for version one.
 
 ```js
 import p23 from 'p23'
 
-p23("**/*.svelte", {
+p23({
   // Custom prefix for nodes. 
   prefix: "p23",
-  globOptions: {
-    /* https://github.com/isaacs/node-glob */
-  }
+
+  // See https://github.com/isaacs/node-glob 
+  glob: "**/*.svelte",
+
+  // See https://github.com/isaacs/node-glob
+  globOptions: {}
 })
 ```
 
