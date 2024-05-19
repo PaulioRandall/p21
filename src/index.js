@@ -1,3 +1,2 @@
 export { default as default } from './parser.js'
-export * from './regexp.js'
-export * from './node-value-parser.js'
+export { default as cleanFileNode } from './clean-node-node.js'

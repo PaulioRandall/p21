@@ -6,13 +6,15 @@ A simple tool for adding parsable and referenceablecomments within Svelte compon
 
 Do whatever you like as long as you adhere to the permissive MIT license found within.
 
-## Example
+## Examples
+
+**Given:**
 
 ```html
-<script>
-  // BartSimpson.svelte
+<!-- BartSimpson.svelte -->
 
-  //p23.ay_caramba: A node with the name (path) 'caramba'.
+<script>
+  //p23.ay_caramba: A node with the name (path) 'ay_caramba'.
 
   /*p23.eat.my.shorts:
     A block node with multiple path segments.
@@ -37,17 +39,20 @@ Do whatever you like as long as you adhere to the permissive MIT license found w
 </div>
 ```
 
+**To Parse raw nodes:**
+
 ```js
 import p23 from 'p23'
 
-// Defaults to glob: **/*.svelte
-const metadata = p23() == [
+const fileDocs = p23()
+
+const expect = [
   {
     name: "BartSimpson.svelte",
     relPath: "./src/lib/BartSimpson.svelte",
     absPath: "/home/esmerelda/github/my-project/src/lib/BartSimpson.svelte",
     nodes: {
-      ay_caramba: "//p23.ay_caramba: A node with the name (path) 'caramba'.",
+      ay_caramba: "//p23.ay_caramba: A node with the name (path) 'ay_caramba'.",
       eat: {
         my: {
           shorts: `/*p23.eat.my.shorts:
@@ -75,11 +80,58 @@ const metadata = p23() == [
 ]
 ```
 
+**To parse and clean nodes:**
+
+```js
+import p23, { cleanFileNode } from 'p23'
+
+const fileDocs = p23().map(cleanFileNode)
+
+// Note that cleaning doesn't alter whitespace.
+// Because I have no idea what kind of whitespace
+// formatting someone may use in their nodes.
+const expect = [
+  {
+    name: "BartSimpson.svelte",
+    relPath: "./src/lib/BartSimpson.svelte",
+    absPath: "/home/esmerelda/github/my-project/src/lib/BartSimpson.svelte",
+    nodes: {
+      ay_caramba: " A node with the name (path) 'ay_caramba'.",
+      eat: {
+        my: {
+          shorts: `
+    A block node with multiple path segments.
+  `
+        }
+      },
+      js: {
+        // Multiline comments are a slight exception
+        // to the note above. The leading whitespace
+        // and prefix `//` are removed.
+        multiline: `
+ An unbroken
+
+ series of
+
+ single line comments.`
+      },
+      html: {
+        line: ` P23 will parse HTML comments too. `,
+        block: `
+    That includes
+    multiline block comments. 
+  `,
+      }
+    }
+  }
+]
+```
+
 ## API
 
 ### Options
 
-For information on glob and glob options see [NPM _glob_ package](https://www.npmjs.com/package/glob) ([Github](https://github.com/isaacs/node-glob)). I should hide this library behind the API, as an implementation detail, but CBA for version one.
+For information on glob and glob options see [NPM _glob_ package](https://www.npmjs.com/package/glob) ([Github](https://github.com/isaacs/node-glob)). I should hide this library behind the API, as an implementation detail, but CBA for the time being.
 
 ```js
 import p23 from 'p23'
@@ -88,7 +140,9 @@ p23({
   // Custom prefix for nodes. 
   prefix: "p23",
 
-  // See https://github.com/isaacs/node-glob 
+  // See https://github.com/isaacs/node-glob.
+  // For SvelteKit packaged libraries you would use
+  // "dist/*.svelte" or some variation of it.
   glob: "**/*.svelte",
 
   // See https://github.com/isaacs/node-glob
@@ -96,14 +150,10 @@ p23({
 })
 ```
 
-### Functions
-
-> TODO
-
 ## Usage Notes
 
-1. Doc strings include the comment delimters.
-2. Cleaning and tidying the doc strings for use is your responsibility, however, some functions have been provided for you
+1. Doc strings include the comment delimters unless cleaned with `cleanFileNode` or by your own means.
+2. Cleaning and managing the whitespace in node values is your responsibility.
 3. Path segments must adhere to: `^[$a-zA-Z_][$a-zA-Z_0-9]*$` (this could be extended to include any character allowed within an object field name).
 4. Yes, it will parse block comments in CSS nodes too.
 5. "Don't have a cow, Man!" - Bart Simpson

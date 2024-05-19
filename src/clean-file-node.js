@@ -1,4 +1,25 @@
-export default (s) => {
+export default (fd) => {
+	cleanNodeTree(fd.nodes)
+	return fd
+}
+
+const cleanNodeTree = (tree) => {
+	for (const name in tree) {
+		const v = tree[name]
+
+		if (isObject(v)) {
+			cleanNodeTree(v)
+		} else {
+			tree[name] = parseNodeValue(v)
+		}
+	}
+}
+
+const isObject = (v) => {
+	return !!v && typeof v === 'object' && !Array.isArray(v)
+}
+
+export const parseNodeValue = (s) => {
 	if (s.startsWith('<!--')) {
 		return parseHtmlBlockValue(s)
 	} else if (s.startsWith('/*')) {

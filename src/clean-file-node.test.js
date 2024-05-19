@@ -1,6 +1,6 @@
-import parseNodeValue from './node-value-parser.js'
+import cleanFileNode, { parseNodeValue } from './clean-file-node.js'
 
-describe('node-value-parser.js', () => {
+describe('clean-file-node.js', () => {
 	describe('parseNodeValue', () => {
 		describe('HTML block', () => {
 			test('One liner', () => {
@@ -66,5 +66,25 @@ describe('node-value-parser.js', () => {
  three`)
 			})
 		})
+	})
+
+	describe('cleanFileNode', () => {
+		const act = cleanFileNode({
+			nodes: {
+				initial: '//p23.initial: Mr ',
+				name: '/*p23.name: Smith */',
+				age: '<!--p23.age: 24 -->',
+			},
+		})
+
+		const exp = {
+			nodes: {
+				initial: ' Mr ',
+				name: ' Smith ',
+				age: ' 24 ',
+			},
+		}
+
+		expect(act).toEqual(exp)
 	})
 })
