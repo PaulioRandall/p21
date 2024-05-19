@@ -1,6 +1,6 @@
 # P23
 
-A simple tool for adding parsable and referenceablecomments within Svelte components.
+Simple tool for adding parsable notes as comments within Svelte components.
 
 ## Made to be Plundered
 
@@ -89,7 +89,7 @@ const fileDocs = p23().map(cleanFileNode)
 
 // Note that cleaning doesn't alter whitespace.
 // Because I have no idea what kind of whitespace
-// formatting someone may use in their nodes.
+// formatting someone may use.
 const expect = [
   {
     name: "BartSimpson.svelte",

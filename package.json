@@ -1,10 +1,10 @@
 {
 	"author": "Paul Williams",
 	"name": "p23",
-	"description": "Simple tool for adding parsable metadata as comments within Svelte components.",
+	"description": "Simple tool for adding parsable notes as comments within Svelte components.",
 	"type": "module",
 	"license": "MIT",
-	"version": "0.8.1",
+	"version": "0.9.0",
 	"engines": {
 		"node": ">=18"
 	},
