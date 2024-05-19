@@ -4,7 +4,7 @@ Simple tool for adding parsable notes as comments within Svelte components.
 
 ## Made to be Plundered
 
-Do whatever you like as long as you adhere to the permissive MIT license found within.
+Do whatever as long as you adhere to the permissive MIT license found within.
 
 ## Examples
 
@@ -45,8 +45,10 @@ Do whatever you like as long as you adhere to the permissive MIT license found w
 import p23 from 'p23'
 
 const fileDocs = p23()
+```
 
-const expect = [
+```js
+fileDocs == [
   {
     name: "BartSimpson.svelte",
     relPath: "./src/lib/BartSimpson.svelte",
@@ -86,11 +88,12 @@ const expect = [
 import p23, { cleanFileNode } from 'p23'
 
 const fileDocs = p23().map(cleanFileNode)
+```
 
-// Note that cleaning doesn't alter whitespace.
-// Because I have no idea what kind of whitespace
-// formatting someone may use.
-const expect = [
+Note that cleaning doesn't alter whitespace. Because I have no idea what kind of whitespace formatting someone may use. Multiline comments have a minor exception where the leading whitespace and prefix `//` are removed.
+
+```js
+fileDocs == [
   {
     name: "BartSimpson.svelte",
     relPath: "./src/lib/BartSimpson.svelte",
@@ -105,9 +108,6 @@ const expect = [
         }
       },
       js: {
-        // Multiline comments are a slight exception
-        // to the note above. The leading whitespace
-        // and prefix `//` are removed.
         multiline: `
  An unbroken
 
@@ -127,9 +127,17 @@ const expect = [
 ]
 ```
 
-## API
+## Usage Notes
 
-### Options
+1. Doc strings include the comment delimters unless cleaned with `cleanFileNode` or by your own means.
+2. Cleaning and managing the whitespace in node values is your responsibility.
+3. Path segments must adhere to: `^[$@a-zA-Z_][$@a-zA-Z0-9_\-]*$`. This list may be extended in future to include almost any string character.
+4. Yes, it will parse block comments in CSS nodes too.
+5. "Don't have a cow, Man!" - Bart Simpson
+
+## Options
+
+Defaults noted as field values. 
 
 For information on glob and glob options see [NPM _glob_ package](https://www.npmjs.com/package/glob) ([Github](https://github.com/isaacs/node-glob)). I should hide this library behind the API, as an implementation detail, but CBA for the time being.
 
@@ -141,20 +149,9 @@ p23({
   // You could use "@" to parse "//@name: value" for example.
   prefix: "p23.",
 
-  // See https://github.com/isaacs/node-glob.
   // For SvelteKit packaged libraries you would use
   // "dist/*.svelte" or some variation of it.
   glob: "**/*.svelte",
-
-  // See https://github.com/isaacs/node-glob
   globOptions: {}
 })
 ```
-
-## Usage Notes
-
-1. Doc strings include the comment delimters unless cleaned with `cleanFileNode` or by your own means.
-2. Cleaning and managing the whitespace in node values is your responsibility.
-3. Path segments must adhere to: `^[$@a-zA-Z_][$@a-zA-Z0-9_\-]*$`. This list may be extended in future to include almost any string character.
-4. Yes, it will parse block comments in CSS nodes too.
-5. "Don't have a cow, Man!" - Bart Simpson
