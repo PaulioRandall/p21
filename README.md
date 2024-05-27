@@ -12,7 +12,7 @@ Do whatever as long as you adhere to the permissive MIT license found within.
 
 ## Examples
 
-**Given:**
+Given the component:
 
 ```html
 <!-- BartSimpson.svelte -->
@@ -22,6 +22,10 @@ Do whatever as long as you adhere to the permissive MIT license found within.
 
   /*p23.eat.my.shorts:
     A block node with multiple path segments.
+  */
+
+  /*p23.eat.my.shorts:
+    Nodes with the same are presented in order as you'll see.
   */
 
   //p23.js.multiline:
@@ -42,7 +46,7 @@ Do whatever as long as you adhere to the permissive MIT license found within.
 </div>
 ```
 
-**To Parse raw nodes:**
+When parsed with:
 
 ```js
 import p23 from 'p23'
@@ -50,34 +54,38 @@ import p23 from 'p23'
 const fileDocs = p23()
 ```
 
+Then `fileDocs` will be something like:
+
 ```js
-fileDocs == [
+[
   {
     name: "BartSimpson.svelte",
     relPath: "./src/lib/BartSimpson.svelte",
     absPath: "/home/esmerelda/github/my-project/src/lib/BartSimpson.svelte",
     nodes: {
-      ay_caramba: "//p23.ay_caramba: A node with the name (path) 'ay_caramba'.",
+      ay_caramba: ["//p23.ay_caramba: A node with the name (path) 'ay_caramba'."],
       eat: {
         my: {
-          shorts: `/*p23.eat.my.shorts:
+          shorts: [`/*p23.eat.my.shorts:
     A block node with multiple path segments.
-  */`
+  */`, `/*p23.eat.my.shorts:
+    Nodes with the same are presented in order as you'll see.
+  */`]
         }
       },
       js: {
-        multiline: `//p23.js.multiline:
+        multiline: [`//p23.js.multiline:
   // An unbroken
   // series of
   //
-  // single line comments.`
+  // single line comments.`]
       },
       html: {
-        line: `<!--p23.html.line: P23 will parse HTML comments too. -->`,
-        block: `<!--p23.html.block:
+        line: [`<!--p23.html.line: P23 will parse HTML comments too. -->`],
+        block: [`<!--p23.html.block:
     That includes
     multiline block comments. 
-  -->`,
+  -->`],
       }
     }
   }
@@ -95,34 +103,36 @@ const fileDocs = p23().map(cleanFileNode)
 Note that cleaning doesn't alter whitespace. Because I have no idea what kind of whitespace formatting someone may use. Multiline comments have a minor exception where the leading whitespace and prefix `//` are removed.
 
 ```js
-fileDocs == [
+[
   {
     name: "BartSimpson.svelte",
     relPath: "./src/lib/BartSimpson.svelte",
     absPath: "/home/esmerelda/github/my-project/src/lib/BartSimpson.svelte",
     nodes: {
-      ay_caramba: " A node with the name (path) 'ay_caramba'.",
+      ay_caramba: [" A node with the name (path) 'ay_caramba'."],
       eat: {
         my: {
-          shorts: `
+          shorts: [`
     A block node with multiple path segments.
-  `
+  `, `
+    Nodes with the same are presented in order as you'll see.
+  `]
         }
       },
       js: {
-        multiline: `
+        multiline: [`
  An unbroken
 
  series of
 
- single line comments.`
+ single line comments.`]
       },
       html: {
-        line: ` P23 will parse HTML comments too. `,
-        block: `
+        line: [` P23 will parse HTML comments too. `],
+        block: [`
     That includes
     multiline block comments. 
-  `,
+  `],
       }
     }
   }
@@ -134,7 +144,7 @@ fileDocs == [
 1. Doc strings include the comment delimters unless cleaned with `cleanFileNode` or by your own means.
 2. Cleaning and managing the whitespace in node values is your responsibility.
 3. Path segments must adhere to: `^[$@a-zA-Z_][$@a-zA-Z0-9_\-]*$`. This list may be extended in future to include almost any string character.
-4. If two or more nodes with the same name are in the same component the last one in the document is returned (no support for multiple same name nodes yet).
+4. Nodes with the same name are in order of appearance within the file.
 5. Yes, it will parse block comments in CSS nodes too.
 6. "Don't have a cow, Man!" - Bart Simpson
 
