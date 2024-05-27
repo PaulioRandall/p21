@@ -9,8 +9,11 @@ const cleanNodeTree = (tree) => {
 
 		if (isObject(v)) {
 			cleanNodeTree(v)
-		} else {
-			tree[name] = parseNodeValue(v)
+			continue
+		}
+
+		for (let i = 0; i < v.length; i++) {
+			v[i] = parseNodeValue(v[i])
 		}
 	}
 }
@@ -28,7 +31,9 @@ export const parseNodeValue = (s) => {
 		return parseJsLineValue(s)
 	}
 
-	throw new Error(`[P23:parseNode] Enable to identify node type for:\n${s}`)
+	throw new Error(
+		`[P23:parseNodeValue] Unable to identify node type for:\n${s}`
+	)
 }
 
 const parseHtmlBlockValue = (s) => {

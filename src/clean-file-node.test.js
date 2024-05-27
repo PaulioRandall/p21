@@ -71,17 +71,17 @@ describe('clean-file-node.js', () => {
 	describe('cleanFileNode', () => {
 		const act = cleanFileNode({
 			nodes: {
-				initial: '//p23.initial: Mr ',
-				name: '/*p23.name: Smith */',
-				age: '<!--p23.age: 24 -->',
+				initial: ['//p23.initial: Mr '],
+				name: ['/*p23.name: Smith */'],
+				age: ['<!--p23.age: 24 -->'],
 			},
 		})
 
 		const exp = {
 			nodes: {
-				initial: ' Mr ',
-				name: ' Smith ',
-				age: ' 24 ',
+				initial: [' Mr '],
+				name: [' Smith '],
+				age: [' 24 '],
 			},
 		}
 
