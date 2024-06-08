@@ -18,17 +18,17 @@ Given the component:
 <!-- BartSimpson.svelte -->
 
 <script>
-  //p23.ay_caramba: A node with the name (or path) 'ay_caramba'.
+  //p23.ay_caramba A node with the name (or path) 'ay_caramba'.
 
-  /*p23.eat.my.shorts:
+  /*p23.eat.my.shorts
     A block node with multiple path segments.
   */
 
-  /*p23.eat.my.shorts:
+  /*p23.eat.my.shorts
     Nodes with the same are presented in order as you'll see.
   */
 
-  //p23.js.multiline:
+  //p23.js.multiline
   // An unbroken
   // series of
   //
@@ -36,10 +36,10 @@ Given the component:
 </script>
 
 <div>
-  <!--p23.html.line: P23 will parse HTML comments too. -->
+  <!--p23.html.line P23 will parse HTML comments too. -->
   <slot />
 
-  <!--p23.html.block:
+  <!--p23.html.block
     That includes
     multiline block comments. 
   -->
@@ -63,26 +63,26 @@ Then `fileDocs` will be something like:
     relPath: "./src/lib/BartSimpson.svelte",
     absPath: "/home/esmerelda/github/my-project/src/lib/BartSimpson.svelte",
     nodes: {
-      ay_caramba: ["//p23.ay_caramba: A node with the name (path) 'ay_caramba'."],
+      ay_caramba: ["//p23.ay_caramba A node with the name (path) 'ay_caramba'."],
       eat: {
         my: {
-          shorts: [`/*p23.eat.my.shorts:
+          shorts: [`/*p23.eat.my.shorts
     A block node with multiple path segments.
-  */`, `/*p23.eat.my.shorts:
+  */`, `/*p23.eat.my.shorts
     Nodes with the same are presented in order as you'll see.
   */`]
         }
       },
       js: {
-        multiline: [`//p23.js.multiline:
+        multiline: [`//p23.js.multiline
   // An unbroken
   // series of
   //
   // single line comments.`]
       },
       html: {
-        line: [`<!--p23.html.line: P23 will parse HTML comments too. -->`],
-        block: [`<!--p23.html.block:
+        line: [`<!--p23.html.line P23 will parse HTML comments too. -->`],
+        block: [`<!--p23.html.block
     That includes
     multiline block comments. 
   -->`],
