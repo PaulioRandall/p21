@@ -1,5 +1,5 @@
 <script>
-	//@artist: Rhapsody of Fire
+	//@artist Rhapsody of Fire
 </script>
 
 <div />

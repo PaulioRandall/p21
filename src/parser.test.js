@@ -44,7 +44,7 @@ describe('parser.js', () => {
 				{
 					...generateFileFields(file),
 					nodes: {
-						artist: ['//p23.artist: Rhapsody of Fire'],
+						artist: ['//p23.artist Rhapsody of Fire'],
 					},
 				},
 			])
@@ -58,9 +58,9 @@ describe('parser.js', () => {
 				{
 					...generateFileFields(file),
 					nodes: {
-						name: ['//p23.name: Meh'],
+						name: ['//p23.name Meh'],
 						description: [
-							`//p23.description: Abc
+							`//p23.description Abc
 	// a
 	// b
 	//
@@ -80,9 +80,9 @@ describe('parser.js', () => {
 				{
 					...generateFileFields(file),
 					nodes: {
-						artist: ['//p23.artist: Rhapsody of Fire'],
-						album: ['//p23.album: From Chaos to Eternity'],
-						release_date: ['//p23.release_date: 2011-06-17'],
+						artist: ['//p23.artist Rhapsody of Fire'],
+						album: ['//p23.album From Chaos to Eternity'],
+						release_date: ['//p23.release_date 2011-06-17'],
 					},
 				},
 			])
@@ -97,7 +97,7 @@ describe('parser.js', () => {
 					...generateFileFields(file),
 					nodes: {
 						bands: {
-							artist: ['//p23.bands.artist: Rhapsody of Fire'],
+							artist: ['//p23.bands.artist Rhapsody of Fire'],
 						},
 					},
 				},
@@ -114,7 +114,7 @@ describe('parser.js', () => {
 					nodes: {
 						music: {
 							bands: {
-								artist: ['//p23.music.bands.artist: Rhapsody of Fire'],
+								artist: ['//p23.music.bands.artist Rhapsody of Fire'],
 							},
 						},
 					},
@@ -130,14 +130,14 @@ describe('parser.js', () => {
 				{
 					...generateFileFields(file),
 					nodes: {
-						type: ['//p23.type: Music'],
+						type: ['//p23.type Music'],
 						music: {
-							type: ['//p23.music.type: Band'],
+							type: ['//p23.music.type Band'],
 							band: {
-								name: ['//p23.music.band.name: Rhapsody of Fire'],
-								genre: ['//p23.music.band.genre: Symphonic Power Metal'],
+								name: ['//p23.music.band.name Rhapsody of Fire'],
+								genre: ['//p23.music.band.genre Symphonic Power Metal'],
 								albums: [
-									`//p23.music.band.albums: [
+									`//p23.music.band.albums [
 	// "Rhapsody of Fire",
 	// "Triumph or Agony",
 	// ]`,
@@ -159,7 +159,7 @@ describe('parser.js', () => {
 					relPath: upath.join(`${testdataDir}/dir/BandOne.svelte`),
 					absPath: upath.resolve(`${testdataDir}/dir/BandOne.svelte`),
 					nodes: {
-						artist: ['//p23.artist: Rhapsody of Fire'],
+						artist: ['//p23.artist Rhapsody of Fire'],
 					},
 				},
 				{
@@ -167,7 +167,7 @@ describe('parser.js', () => {
 					relPath: upath.join(`${testdataDir}/dir/BandTwo.svelte`),
 					absPath: upath.resolve(`${testdataDir}/dir/BandTwo.svelte`),
 					nodes: {
-						artist: ['//p23.artist: Children of Bodom'],
+						artist: ['//p23.artist Children of Bodom'],
 					},
 				},
 			])
@@ -184,7 +184,7 @@ describe('parser.js', () => {
 				{
 					...generateFileFields(file),
 					nodes: {
-						artist: ['//@artist: Rhapsody of Fire'],
+						artist: ['//@artist Rhapsody of Fire'],
 					},
 				},
 			])
@@ -198,14 +198,14 @@ describe('parser.js', () => {
 				{
 					...generateFileFields(file),
 					nodes: {
-						type: ['//p23.type: Music'],
+						type: ['//p23.type Music'],
 						music: {
-							type: ['//p23.music.type: Band'],
+							type: ['//p23.music.type Band'],
 							band: {
-								name: ['<!--p23.music.band.name: Rhapsody of Fire-->'],
-								genre: ['<!--p23.music.band.genre: Symphonic Power Metal-->'],
+								name: ['<!--p23.music.band.name Rhapsody of Fire-->'],
+								genre: ['<!--p23.music.band.genre Symphonic Power Metal-->'],
 								albums: [
-									`<!--p23.music.band.albums:
+									`<!--p23.music.band.albums
 	[
 		"Rhapsody of Fire",
 		"Triumph or Agony",
@@ -227,7 +227,7 @@ describe('parser.js', () => {
 				{
 					...generateFileFields(file),
 					nodes: {
-						artist: ['/*p23.artist: Rhapsody of Fire*/'],
+						artist: ['/*p23.artist Rhapsody of Fire*/'],
 					},
 				},
 			])
@@ -242,7 +242,7 @@ describe('parser.js', () => {
 					...generateFileFields(file),
 					nodes: {
 						artist: [
-							`/*p23.artist:
+							`/*p23.artist
 		Rhapsody of Fire
 	*/`,
 						],
@@ -259,11 +259,7 @@ describe('parser.js', () => {
 				{
 					...generateFileFields(file),
 					nodes: {
-						name: [
-							'//p23.name: Alice',
-							'//p23.name: Bob',
-							'//p23.name: Charlie',
-						],
+						name: ['//p23.name Alice', '//p23.name Bob', '//p23.name Charlie'],
 					},
 				},
 			])

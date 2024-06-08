@@ -5,19 +5,19 @@ const wsRule = String.raw`[^\S\n]*` // Except linefeeds
 const newJsLine = (prefix = 'p23.') => {
 	prefix = String.raw`${prefix}`
 	return RegExp(
-		String.raw`\/\/${prefix}${pathRule}:[^\n]*(?:\n${wsRule}\/\/(?!${prefix})[^\n]*)*`,
+		String.raw`\/\/${prefix}${pathRule}\s[^\n]*(?:\n${wsRule}\/\/(?!${prefix})[^\n]*)*`,
 		'igms'
 	)
 }
 
 const newJsBlock = (prefix = 'p23.') => {
 	prefix = String.raw`${prefix}`
-	return RegExp(String.raw`\/\*${prefix}${pathRule}:.*?\*\/`, 'igms')
+	return RegExp(String.raw`\/\*${prefix}${pathRule}\s.*?\*\/`, 'igms')
 }
 
 const newHtml = (prefix = 'p23.') => {
 	prefix = String.raw`${prefix}`
-	return RegExp(String.raw`<!--${prefix}${pathRule}:.*?-->`, 'igms')
+	return RegExp(String.raw`<!--${prefix}${pathRule}\s.*?-->`, 'igms')
 }
 
 export default {

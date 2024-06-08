@@ -37,26 +37,26 @@ export const parseNodeValue = (s) => {
 }
 
 const parseHtmlBlockValue = (s) => {
-	// <!--p23.name: value -->
+	// <!--p23.name value -->
 	s = removePrefix(s)
 	s = removeSuffix(s, '-->')
 	return s
 }
 
 const parseJsBlockValue = (s) => {
-	/*p23.name: value */
+	/*p23.name value */
 	s = removePrefix(s)
 	s = removeSuffix(s, '*/')
 	return s
 }
 
 const parseJsLineValue = (s) => {
-	//p23.name: value
+	//p23.name value
 
-	//p23.name: zero
+	//p23.name zero
 	// one
 
-	//p23.name:
+	//p23.name
 	// one
 	//
 	// three
@@ -79,7 +79,7 @@ const removeCommentPrefixFromLines = (s) => {
 }
 
 const removePrefix = (s) => {
-	const from = s.indexOf(':') + 1
+	const from = s.search(/\s/) || 0
 	return s.slice(from)
 }
 

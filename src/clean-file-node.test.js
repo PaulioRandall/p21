@@ -4,12 +4,12 @@ describe('clean-file-node.js', () => {
 	describe('parseNodeValue', () => {
 		describe('HTML block', () => {
 			test('One liner', () => {
-				const act = parseNodeValue('<!--p23.name: value -->')
+				const act = parseNodeValue('<!--p23.name value -->')
 				expect(act).toEqual(' value ')
 			})
 
 			test('Multiple lines', () => {
-				const act = parseNodeValue(`<!--p23.name:
+				const act = parseNodeValue(`<!--p23.name
 				one
 				two
 				three
@@ -24,12 +24,12 @@ describe('clean-file-node.js', () => {
 
 		describe('JavaScript block', () => {
 			test('One liner', () => {
-				const act = parseNodeValue('/*p23.name: value */')
+				const act = parseNodeValue('/*p23.name value */')
 				expect(act).toEqual(' value ')
 			})
 
 			test('Multiple lines', () => {
-				const act = parseNodeValue(`/*p23.name:
+				const act = parseNodeValue(`/*p23.name
 				one
 				two
 				three
@@ -44,19 +44,19 @@ describe('clean-file-node.js', () => {
 
 		describe('JavaScript line & line block', () => {
 			test('One liner', () => {
-				const act = parseNodeValue('//p23.name: value ')
+				const act = parseNodeValue('//p23.name value ')
 				expect(act).toEqual(' value ')
 			})
 
 			test('Line block with content starting on initial line', () => {
-				const act = parseNodeValue(`//p23.name: zero
+				const act = parseNodeValue(`//p23.name zero
 // one`)
 				expect(act).toEqual(` zero
  one`)
 			})
 
 			test('Line block with content starting on second line', () => {
-				const act = parseNodeValue(`//p23.name:
+				const act = parseNodeValue(`//p23.name
   // one
   //
   // three`)
@@ -71,9 +71,9 @@ describe('clean-file-node.js', () => {
 	describe('cleanFileNode', () => {
 		const act = cleanFileNode({
 			nodes: {
-				initial: ['//p23.initial: Mr '],
-				name: ['/*p23.name: Smith */'],
-				age: ['<!--p23.age: 24 -->'],
+				initial: ['//p23.initial Mr '],
+				name: ['/*p23.name Smith */'],
+				age: ['<!--p23.age 24 -->'],
 			},
 		})
 
