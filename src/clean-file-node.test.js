@@ -45,14 +45,14 @@ describe('clean-file-node.js', () => {
 		describe('JavaScript line & line block', () => {
 			test('One liner', () => {
 				const act = parseNodeValue('//p23.name value ')
-				expect(act).toEqual(' value ')
+				expect(act).toEqual('value ')
 			})
 
 			test('Line block with content starting on initial line', () => {
 				const act = parseNodeValue(`//p23.name zero
 // one`)
-				expect(act).toEqual(` zero
- one`)
+				expect(act).toEqual(`zero
+one`)
 			})
 
 			test('Line block with content starting on second line', () => {
@@ -61,9 +61,9 @@ describe('clean-file-node.js', () => {
   //
   // three`)
 				expect(act).toEqual(`
- one
+one
 
- three`)
+three`)
 			})
 		})
 	})
@@ -79,7 +79,7 @@ describe('clean-file-node.js', () => {
 
 		const exp = {
 			nodes: {
-				initial: [' Mr '],
+				initial: ['Mr '],
 				name: [' Smith '],
 				age: [' 24 '],
 			},

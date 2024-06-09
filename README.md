@@ -100,7 +100,10 @@ import p23, { cleanFileNode } from 'p23'
 const fileDocs = p23().map(cleanFileNode)
 ```
 
-Note that cleaning doesn't alter whitespace. Because I have no idea what kind of whitespace formatting someone may use. Multiline comments have a minor exception where the leading whitespace and prefix `//` are removed.
+Note that cleaning doesn't alter whitespace. Because I have no idea what kind of whitespace formatting someone may use.
+
+An unbroken series of single line comments are the exception. The leading whitespace and prefix `//` is removed from each line. The leading space in the
+content is also removed if there is one, and only one, leading space.
 
 ```js
 [
@@ -109,7 +112,7 @@ Note that cleaning doesn't alter whitespace. Because I have no idea what kind of
     relPath: "./src/lib/BartSimpson.svelte",
     absPath: "/home/esmerelda/github/my-project/src/lib/BartSimpson.svelte",
     nodes: {
-      ay_caramba: [" A node with the name (path) 'ay_caramba'."],
+      ay_caramba: ["A node with the name (path) 'ay_caramba'."],
       eat: {
         my: {
           shorts: [`
@@ -121,11 +124,11 @@ Note that cleaning doesn't alter whitespace. Because I have no idea what kind of
       },
       js: {
         multiline: [`
- An unbroken
+An unbroken
 
- series of
+series of
 
- single line comments.`]
+single line comments.`]
       },
       html: {
         line: [` P23 will parse HTML comments too. `],
@@ -143,7 +146,7 @@ Note that cleaning doesn't alter whitespace. Because I have no idea what kind of
 
 1. Doc strings include the comment delimters unless cleaned with `cleanFileNode` or by your own means.
 2. Cleaning and managing the whitespace in node values is your responsibility.
-3. Path segments must adhere to: `^[$@a-zA-Z_][$@a-zA-Z0-9_\-]*$`. This list may be extended in future to include almost any string character.
+3. Path segments must adhere to: `^[$@a-zA-Z_][$@a-zA-Z0-9_\-]*$`. This list may be extended in future to include **almost** any string character.
 4. Nodes with the same name are in order of appearance within the file.
 5. Yes, it will parse block comments in CSS nodes too.
 6. "Don't have a cow, Man!" - Bart Simpson

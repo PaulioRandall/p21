@@ -69,9 +69,15 @@ const removeCommentPrefixFromLines = (s) => {
 	const lines = s.split('\n')
 
 	for (let i = 0; i < lines.length; i++) {
+		// Remove the indent and comment delimter.
 		const linePrefix = lines[i].match(/^\s*\/\//)
 		if (linePrefix) {
 			lines[i] = lines[i].slice(linePrefix[0].length)
+		}
+
+		// Remove the leading space if there is one, and only one, leading space.
+		if (/^ [^ ]/.test(lines[i])) {
+			lines[i] = lines[i].slice(1)
 		}
 	}
 
