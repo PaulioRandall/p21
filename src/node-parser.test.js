@@ -1,13 +1,13 @@
-import parse from './parser.js'
+import parseNodes from './node-parser.js'
 
-describe('parser.js', () => {
+describe('node-parser.js', () => {
 	test('No docs', () => {
 		const given = {
 			content: `<div />
 `,
 		}
 
-		const act = parse([given])
+		const act = parseNodes([given])
 
 		const exp = [
 			{
@@ -27,7 +27,7 @@ describe('parser.js', () => {
 `,
 		}
 
-		const act = parse([given])
+		const act = parseNodes([given])
 
 		const exp = [
 			{
@@ -55,7 +55,7 @@ describe('parser.js', () => {
 `,
 		}
 
-		const act = parse([given])
+		const act = parseNodes([given])
 
 		const exp = [
 			{
@@ -87,7 +87,7 @@ describe('parser.js', () => {
 `,
 		}
 
-		const act = parse([given])
+		const act = parseNodes([given])
 
 		const exp = [
 			{
@@ -111,7 +111,7 @@ describe('parser.js', () => {
 `,
 		}
 
-		const act = parse([given])
+		const act = parseNodes([given])
 
 		const exp = [
 			{
@@ -135,7 +135,7 @@ describe('parser.js', () => {
 `,
 		}
 
-		const act = parse([given])
+		const act = parseNodes([given])
 
 		const exp = [
 			{
@@ -168,7 +168,7 @@ describe('parser.js', () => {
 `,
 		}
 
-		const act = parse([given])
+		const act = parseNodes([given])
 
 		const exp = [
 			{
@@ -203,7 +203,7 @@ describe('parser.js', () => {
 `,
 		}
 
-		const act = parse([given], { prefix: '@' })
+		const act = parseNodes([given], { prefix: '@' })
 
 		const exp = [
 			{
@@ -234,7 +234,7 @@ describe('parser.js', () => {
 `,
 		}
 
-		const act = parse([given])
+		const act = parseNodes([given])
 
 		const exp = [
 			{
@@ -269,7 +269,7 @@ describe('parser.js', () => {
 `,
 		}
 
-		const act = parse([given])
+		const act = parseNodes([given])
 
 		const exp = [
 			{
@@ -293,7 +293,7 @@ describe('parser.js', () => {
 `,
 		}
 
-		const act = parse([given])
+		const act = parseNodes([given])
 
 		const exp = [
 			{
@@ -321,7 +321,7 @@ describe('parser.js', () => {
 `,
 		}
 
-		const act = parse([given])
+		const act = parseNodes([given])
 
 		const exp = [
 			{
