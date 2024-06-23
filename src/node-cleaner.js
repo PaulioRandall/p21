@@ -47,17 +47,17 @@ const cleanJsLineValue = (s) => {
 	//
 	// three
 
-	s = s.trim()
+	const indent = parseIndent(s)
+	s = s.slice(indent.length)
+
 	s = removePrefix(s)
 	return removeCommentPrefixFromLines(s)
 }
 
 const removeCommentPrefixFromLines = (s) => {
-	s = s.trim()
-
 	const lines = s.split('\n')
 
-	for (let i = 0; i < lines.length; i++) {
+	for (let i = 1; i < lines.length; i++) {
 		// Remove the indent and comment delimter.
 		const linePrefix = lines[i].match(/^\s*\/\//)
 		if (linePrefix) {
@@ -77,7 +77,8 @@ const cleanJsBlockValue = (s) => {
 	/*p23.name value */
 
 	const indent = parseIndent(s)
-	s = s.trim()
+	s = s.slice(indent.length)
+
 	s = removePrefix(s)
 	s = removeSuffix(s, '*/')
 
@@ -87,14 +88,15 @@ const cleanJsBlockValue = (s) => {
 	 * and sometimes like this
 	*/
 	s = removeJsBlockLineIndents(s, indent)
-	return s.trim()
+	return s
 }
 
 const cleanHtmlBlockValue = (s) => {
 	// <!--p23.name value -->
 
 	const indent = parseIndent(s)
-	s = s.trim()
+	s = s.slice(indent.length)
+
 	s = removePrefix(s)
 	s = removeSuffix(s, '-->')
 
@@ -106,7 +108,7 @@ const cleanHtmlBlockValue = (s) => {
 	-->
 	*/
 	s = removeHtmlBlockLineIndents(s, indent)
-	return s.trim()
+	return s
 }
 
 const parseIndent = (s) => {
@@ -133,8 +135,10 @@ const removeJsBlockLineIndents = (s, indent) => {
 
 		if (/^ \* /.test(lines[i])) {
 			lines[i] = lines[i].slice(3)
-		} else if (/^ /.test(lines[i])) {
+		} else if (/^\t/.test(lines[i])) {
 			lines[i] = lines[i].slice(1)
+		} else if (/^  /.test(lines[i])) {
+			lines[i] = lines[i].slice(2)
 		}
 	}
 

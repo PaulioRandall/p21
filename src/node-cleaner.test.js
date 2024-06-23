@@ -15,7 +15,7 @@ describe('node-cleaner.js', () => {
 		const exp = [
 			{
 				nodes: {
-					artist: ['Rhapsody of Fire'],
+					artist: [' Rhapsody of Fire'],
 				},
 			},
 		]
@@ -40,7 +40,7 @@ describe('node-cleaner.js', () => {
 		])
 
 		const expNode = lines(
-			'first', //
+			' first', //
 			'a',
 			'	b',
 			'		c'
@@ -60,9 +60,9 @@ describe('node-cleaner.js', () => {
 	test('JS block', () => {
 		const givenNode = lines(
 			'	/*p23.artist first', //
-			'	 a',
-			'	 	b',
-			'	 		c',
+			'		a',
+			'			b',
+			'				c',
 			'	 * d',
 			'	  e',
 			'	*/'
@@ -77,12 +77,13 @@ describe('node-cleaner.js', () => {
 		])
 
 		const expNode = lines(
-			'first', //
+			' first', //
 			'a',
 			'	b',
 			'		c',
 			'd',
-			' e'
+			'e',
+			''
 		)
 
 		const exp = [
@@ -115,11 +116,12 @@ describe('node-cleaner.js', () => {
 		])
 
 		const expNode = lines(
-			'first', //
+			' first', //
 			'a',
 			'	b',
 			'		c',
-			' e'
+			' e',
+			''
 		)
 
 		const exp = [

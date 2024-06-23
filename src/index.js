@@ -1,8 +1,8 @@
-export { default as cleanNodes } from './node-cleaner.js'
-
 import listFiles from './file-lister.js'
-import loadContent from './file-reader.js'
+import loadContent from './content-loader.js'
 import parseNodes from './node-parser.js'
+
+export { default as cleanNodes } from './node-cleaner.js'
 
 export default (options = {}) => {
 	const files = listFiles(options)

@@ -95,15 +95,15 @@ Then `fileDocs` will be something like:
 **To parse and clean nodes:**
 
 ```js
-import p23, { cleanFileNode } from 'p23'
+import p23, { cleanNodes } from 'p23'
 
-const fileDocs = p23().map(cleanFileNode)
+const files = p23()
+const fileDocs = cleanNodes(files)
 ```
 
-Note that cleaning doesn't alter whitespace. Because I have no idea what kind of whitespace formatting someone may use.
+Cleaning removes the P23 delimiter and leading whitespace from lines. Whitespace filtering is opinionated:
 
-An unbroken series of single line comments are the exception. The leading whitespace and prefix `//` is removed from each line. The leading space in the
-content is also removed if there is one, and only one, leading space.
+> TODO: Rules for whitespace filtering
 
 ```js
 [
@@ -116,9 +116,9 @@ content is also removed if there is one, and only one, leading space.
       eat: {
         my: {
           shorts: [`
-    A block node with multiple path segments.
+A block node with multiple path segments.
   `, `
-    Nodes with the same are presented in order as you'll see.
+Nodes with the same are presented in order as you'll see.
   `]
         }
       },
@@ -133,8 +133,8 @@ single line comments.`]
       html: {
         line: [` P23 will parse HTML comments too. `],
         block: [`
-    That includes
-    multiline block comments. 
+That includes
+multiline block comments. 
   `],
       }
     }
@@ -144,8 +144,8 @@ single line comments.`]
 
 ## Usage Notes
 
-1. Doc strings include the comment delimters unless cleaned with `cleanFileNode` or by your own means.
-2. Cleaning and managing the whitespace in node values is your responsibility.
+1. Doc strings include the comment delimters unless cleaned with `cleanNodes` or by your own means.
+2. Cleaning and managing other whitespace in node values is your responsibility.
 3. Path segments must adhere to: `^[$@a-zA-Z_][$@a-zA-Z0-9_\-]*$`. This list may be extended in future to include **almost** any string character.
 4. Nodes with the same name are in order of appearance within the file.
 5. Yes, it will parse block comments in CSS nodes too.
@@ -179,7 +179,3 @@ I simply wanted to document a component's API within itself and regenerate that 
 A few documentation tools come close but none completely satisfy my need for simplicity, readability, flexibility, ability to document all mentioned aspects of the API. Furthermore, existing tools traded-off too much flexibility for conciseness. So I set about creating [**P24**](https://github.com/PaulioRandall/p24). In the process I was able to separate the concern of parsing annotated comments as this library, **P23**.
 
 To clarify, **P23** is not about documenting components (**P24** does that). It is about specifying parsable comments within Svelte components. The output can then be used by a documentation package or some other innovative tooling. For example, you could build a changelog package where maintainers write changes to a component within the component. The package could render them in a similar manner to how **P24** does with API documentation.
-
-## Fore Story
-
-Version 2 could include support for multiple instances of the same node. The last specified value will be used if multiple nodes with the same name are parsed within a single component. The node values could go into an array instead, similar to query parameter parsing in some libraries.
