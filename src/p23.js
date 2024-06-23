@@ -1,22 +1,58 @@
+import fs from 'fs'
+import path from 'path'
+import { globSync } from 'glob'
 import regexp from './regexp.js'
 
 const defaultGlobOptions = {
 	nodir: true,
 }
 
-export default (files, options = {}) => {
-	options = parseOptions(options)
-	return files.map((f) => {
-		f.nodes = extractNodes(f.content, options)
-		return f
-	})
+export default (options = {}) => {
+	try {
+		options = parseOptions(options)
+		return parseTree(options)
+	} catch (e) {
+		console.error(`[P23] Unable to parse with glob '${options.glob}'`)
+		console.error(e)
+		return null
+	}
 }
 
 const parseOptions = (options) => {
 	return {
 		prefix: 'p23.',
+		glob: '**/*.svelte',
+		globOptions: defaultGlobOptions,
 		...options,
 	}
+}
+
+const parseTree = (options) => {
+	return listFiles(options) //
+		.map(fileInfo)
+		.map((f) => appendFileNodes(f, options))
+}
+
+const listFiles = (options) => {
+	return globSync(options.glob, options.globOptions).sort()
+}
+
+const fileInfo = (filePath) => {
+	return {
+		name: path.basename(filePath),
+		relPath: filePath,
+		absPath: path.resolve(filePath),
+	}
+}
+
+const appendFileNodes = (f, options) => {
+	const data = readWholeFile(f.absPath)
+	f.nodes = extractNodes(data, options)
+	return f
+}
+
+const readWholeFile = (absPath) => {
+	return fs.readFileSync(absPath, { encoding: 'utf-8' })
 }
 
 const extractNodes = (data, options) => {

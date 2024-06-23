@@ -1,268 +1,341 @@
-import upath from 'upath'
 import parse from './parser.js'
-const testdataDir = './src/testdata'
-
-const createSvelteFilePath = (filename) => {
-	return upath.join(`${testdataDir}/files/${filename}.svelte`)
-}
-
-const generateFileFields = (file) => {
-	return {
-		name: upath.basename(file),
-		relPath: upath.join(file),
-		absPath: upath.resolve(file),
-	}
-}
-
-const parseToUnix = (file) => {
-	return parse({ glob: file }).map((m) => {
-		m.relPath = upath.toUnix(m.relPath)
-		m.absPath = upath.toUnix(m.absPath)
-		return m
-	})
-}
 
 describe('parser.js', () => {
-	describe('parse', () => {
-		test('Parses no docs', () => {
-			const file = createSvelteFilePath('NoDocs')
-			const metadata = parse({ glob: file })
+	test('No docs', () => {
+		const given = {
+			content: `<div />
+`,
+		}
 
-			expect(metadata).toEqual([
-				{
-					...generateFileFields(file),
-					nodes: {},
+		const act = parse([given])
+
+		const exp = [
+			{
+				...given,
+				nodes: {},
+			},
+		]
+
+		expect(act).toEqual(exp)
+	})
+
+	test('JS non-nested lines', () => {
+		const given = {
+			content: `<script>
+	//p23.artist Rhapsody of Fire
+</script>
+`,
+		}
+
+		const act = parse([given])
+
+		const exp = [
+			{
+				...given,
+				nodes: {
+					artist: ['	//p23.artist Rhapsody of Fire'],
 				},
-			])
-		})
+			},
+		]
 
-		test('Parses non-nested single line node', () => {
-			const file = createSvelteFilePath('JsLine_NonNested')
-			const metadata = parse({ glob: file })
+		expect(act).toEqual(exp)
+	})
 
-			expect(metadata).toEqual([
-				{
-					...generateFileFields(file),
-					nodes: {
-						artist: ['//p23.artist Rhapsody of Fire'],
-					},
-				},
-			])
-		})
+	test('JS multi line', () => {
+		const given = {
+			content: `<script>
+	//p23.name Meh
+	//p23.description Abc
+	// a
+	// b
+	//
+	// y
+	// z
+</script>
+`,
+		}
 
-		test('Parses multiple lines in series that represent a single node', () => {
-			const file = createSvelteFilePath('JsLine_MultiLine')
-			const metadata = parse({ glob: file })
+		const act = parse([given])
 
-			expect(metadata).toEqual([
-				{
-					...generateFileFields(file),
-					nodes: {
-						name: ['//p23.name Meh'],
-						description: [
-							`//p23.description Abc
+		const exp = [
+			{
+				...given,
+				nodes: {
+					name: ['	//p23.name Meh'],
+					description: [
+						`	//p23.description Abc
 	// a
 	// b
 	//
 	// y
 	// z`,
-						],
+					],
+				},
+			},
+		]
+
+		expect(act).toEqual(exp)
+	})
+
+	test('Many non-nested JS lines', () => {
+		const given = {
+			content: `<script>
+	//p23.artist Rhapsody of Fire
+	//p23.album From Chaos to Eternity
+	//p23.release_date 2011-06-17
+</script>
+`,
+		}
+
+		const act = parse([given])
+
+		const exp = [
+			{
+				...given,
+				nodes: {
+					artist: ['	//p23.artist Rhapsody of Fire'],
+					album: ['	//p23.album From Chaos to Eternity'],
+					release_date: ['	//p23.release_date 2011-06-17'],
+				},
+			},
+		]
+
+		expect(act).toEqual(exp)
+	})
+
+	test('Nested JS lined', () => {
+		const given = {
+			content: `<script>
+	//p23.bands.artist Rhapsody of Fire
+</script>
+`,
+		}
+
+		const act = parse([given])
+
+		const exp = [
+			{
+				...given,
+				nodes: {
+					bands: {
+						artist: ['	//p23.bands.artist Rhapsody of Fire'],
 					},
 				},
-			])
-		})
+			},
+		]
 
-		test('Parses multiple non-nested single line nodes', () => {
-			const file = createSvelteFilePath('JsLine_NonNested_Multiple')
-			const metadata = parse({ glob: file })
+		expect(act).toEqual(exp)
+	})
 
-			expect(metadata).toEqual([
-				{
-					...generateFileFields(file),
-					nodes: {
-						artist: ['//p23.artist Rhapsody of Fire'],
-						album: ['//p23.album From Chaos to Eternity'],
-						release_date: ['//p23.release_date 2011-06-17'],
-					},
-				},
-			])
-		})
+	test('JsLine_Nested_2.svelte', () => {
+		const given = {
+			content: `<script>
+	//p23.music.bands.artist Rhapsody of Fire
+</script>
+`,
+		}
 
-		test('Parses nested single line node', () => {
-			const file = createSvelteFilePath('JsLine_Nested')
-			const metadata = parse({ glob: file })
+		const act = parse([given])
 
-			expect(metadata).toEqual([
-				{
-					...generateFileFields(file),
-					nodes: {
+		const exp = [
+			{
+				...given,
+				nodes: {
+					music: {
 						bands: {
-							artist: ['//p23.bands.artist Rhapsody of Fire'],
+							artist: ['	//p23.music.bands.artist Rhapsody of Fire'],
 						},
 					},
 				},
-			])
-		})
+			},
+		]
 
-		test('Parses nested single line node 2', () => {
-			const file = createSvelteFilePath('JsLine_Nested_2')
-			const metadata = parse({ glob: file })
+		expect(act).toEqual(exp)
+	})
 
-			expect(metadata).toEqual([
-				{
-					...generateFileFields(file),
-					nodes: {
-						music: {
-							bands: {
-								artist: ['//p23.music.bands.artist Rhapsody of Fire'],
-							},
-						},
-					},
-				},
-			])
-		})
+	test('JsLine_Complex.svelte', () => {
+		const given = {
+			content: `<script>
+	//p23.type Music
+	//p23.music.type Band
+	//p23.music.band.genre Symphonic Power Metal
+	//p23.music.band.name Rhapsody of Fire
+	//p23.music.band.albums [
+	// "Rhapsody of Fire",
+	// "Triumph or Agony",
+	// ]
+</script>
+`,
+		}
 
-		test('Parses comprehensive set of nested and non-nested nodes', () => {
-			const file = createSvelteFilePath('JsLine_Complex')
-			const metadata = parse({ glob: file })
+		const act = parse([given])
 
-			expect(metadata).toEqual([
-				{
-					...generateFileFields(file),
-					nodes: {
-						type: ['//p23.type Music'],
-						music: {
-							type: ['//p23.music.type Band'],
-							band: {
-								name: ['//p23.music.band.name Rhapsody of Fire'],
-								genre: ['//p23.music.band.genre Symphonic Power Metal'],
-								albums: [
-									`//p23.music.band.albums [
+		const exp = [
+			{
+				...given,
+				nodes: {
+					type: ['	//p23.type Music'],
+					music: {
+						type: ['	//p23.music.type Band'],
+						band: {
+							name: ['	//p23.music.band.name Rhapsody of Fire'],
+							genre: ['	//p23.music.band.genre Symphonic Power Metal'],
+							albums: [
+								`	//p23.music.band.albums [
 	// "Rhapsody of Fire",
 	// "Triumph or Agony",
 	// ]`,
-								],
-							},
+							],
 						},
 					},
 				},
-			])
-		})
+			},
+		]
 
-		test('Parses directory', () => {
-			const dir = upath.join(`${testdataDir}/dir`)
-			const metadata = parse({ glob: dir + '/**/*.svelte' })
+		expect(act).toEqual(exp)
+	})
 
-			expect(metadata).toEqual([
-				{
-					name: 'BandOne.svelte',
-					relPath: upath.join(`${testdataDir}/dir/BandOne.svelte`),
-					absPath: upath.resolve(`${testdataDir}/dir/BandOne.svelte`),
-					nodes: {
-						artist: ['//p23.artist Rhapsody of Fire'],
-					},
+	test('Option prefix', () => {
+		const given = {
+			content: `<script>
+	//@artist Rhapsody of Fire
+</script>
+`,
+		}
+
+		const act = parse([given], { prefix: '@' })
+
+		const exp = [
+			{
+				...given,
+				nodes: {
+					artist: ['	//@artist Rhapsody of Fire'],
 				},
-				{
-					name: 'BandTwo.svelte',
-					relPath: upath.join(`${testdataDir}/dir/BandTwo.svelte`),
-					absPath: upath.resolve(`${testdataDir}/dir/BandTwo.svelte`),
-					nodes: {
-						artist: ['//p23.artist Children of Bodom'],
-					},
-				},
-			])
-		})
+			},
+		]
 
-		test('Parses with option', () => {
-			const file = createSvelteFilePath('JsLine_Option_Prefix')
-			const metadata = parse({
-				glob: file,
-				prefix: '@',
-			})
+		expect(act).toEqual(exp)
+	})
 
-			expect(metadata).toEqual([
-				{
-					...generateFileFields(file),
-					nodes: {
-						artist: ['//@artist Rhapsody of Fire'],
-					},
-				},
-			])
-		})
+	test('HTML nodes', () => {
+		const given = {
+			content: `<!--p23.music.band.genre Symphonic Power Metal-->
 
-		test('Parses with HTML docs', () => {
-			const file = createSvelteFilePath('htmlDocs')
-			const metadata = parse({ glob: file })
+<div>
+	<!--p23.music.band.name Rhapsody of Fire-->
+</div>
 
-			expect(metadata).toEqual([
-				{
-					...generateFileFields(file),
-					nodes: {
-						type: ['//p23.type Music'],
-						music: {
-							type: ['//p23.music.type Band'],
-							band: {
-								name: ['<!--p23.music.band.name Rhapsody of Fire-->'],
-								genre: ['<!--p23.music.band.genre Symphonic Power Metal-->'],
-								albums: [
-									`<!--p23.music.band.albums
+<!--p23.music.band.albums
+	[
+		"Rhapsody of Fire",
+		"Triumph or Agony",
+	]
+-->
+`,
+		}
+
+		const act = parse([given])
+
+		const exp = [
+			{
+				...given,
+				nodes: {
+					music: {
+						band: {
+							name: ['	<!--p23.music.band.name Rhapsody of Fire-->'],
+							genre: ['<!--p23.music.band.genre Symphonic Power Metal-->'],
+							albums: [
+								`<!--p23.music.band.albums
 	[
 		"Rhapsody of Fire",
 		"Triumph or Agony",
 	]
 -->`,
-								],
-							},
+							],
 						},
 					},
 				},
-			])
-		})
+			},
+		]
 
-		test('Parses block comment on a single line', () => {
-			const file = createSvelteFilePath('JsBlock_Line')
-			const metadata = parse({ glob: file })
+		expect(act).toEqual(exp)
+	})
 
-			expect(metadata).toEqual([
-				{
-					...generateFileFields(file),
-					nodes: {
-						artist: ['/*p23.artist Rhapsody of Fire*/'],
-					},
+	test('JS block, single line', () => {
+		const given = {
+			content: `<script>
+	/*p23.artist Rhapsody of Fire*/
+</script>
+`,
+		}
+
+		const act = parse([given])
+
+		const exp = [
+			{
+				...given,
+				nodes: {
+					artist: ['	/*p23.artist Rhapsody of Fire*/'],
 				},
-			])
-		})
+			},
+		]
 
-		test('Parses block comment on multiple lines', () => {
-			const file = createSvelteFilePath('JsBlock_Lines')
-			const metadata = parse({ glob: file })
+		expect(act).toEqual(exp)
+	})
 
-			expect(metadata).toEqual([
-				{
-					...generateFileFields(file),
-					nodes: {
-						artist: [
-							`/*p23.artist
+	test('JS Block, multiline', () => {
+		const given = {
+			content: `<script>
+	/*p23.artist
+		Rhapsody of Fire
+	*/
+</script>
+`,
+		}
+
+		const act = parse([given])
+
+		const exp = [
+			{
+				...given,
+				nodes: {
+					artist: [
+						`	/*p23.artist
 		Rhapsody of Fire
 	*/`,
-						],
-					},
+					],
 				},
-			])
-		})
+			},
+		]
 
-		test('Parses block comment on multiple lines', () => {
-			const file = createSvelteFilePath('JSLine_SameNodeMultipleTimes')
-			const metadata = parse({ glob: file })
+		expect(act).toEqual(exp)
+	})
 
-			expect(metadata).toEqual([
-				{
-					...generateFileFields(file),
-					nodes: {
-						name: ['//p23.name Alice', '//p23.name Bob', '//p23.name Charlie'],
-					},
+	test('Same node multiple times', () => {
+		const given = {
+			content: `<script>
+	//p23.name Alice
+	//p23.name Bob
+	//p23.name Charlie
+</script>
+`,
+		}
+
+		const act = parse([given])
+
+		const exp = [
+			{
+				...given,
+				nodes: {
+					name: [
+						'	//p23.name Alice', //
+						'	//p23.name Bob',
+						'	//p23.name Charlie',
+					],
 				},
-			])
-		})
+			},
+		]
+
+		expect(act).toEqual(exp)
 	})
 })
