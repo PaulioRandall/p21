@@ -8,7 +8,7 @@ Simple tool for parsing referenceable comments within Svelte components.
 
 ## Made to be Plundered
 
-Fork, pillage, and plunder! Do whatever as long as you adhere to the permissive MIT license found within.
+Fork, pillage, and plunder! Do whatever as long as you adhere to the project's permissive MIT license.
 
 ## Examples
 
@@ -103,7 +103,16 @@ const fileDocs = cleanNodes(files)
 
 Cleaning removes the P23 delimiter and leading whitespace from lines. Whitespace filtering is opinionated:
 
-> TODO: Rules for whitespace filtering
+- The first line determines the base indent.
+- For each JS and CSS block comment line other than the first:
+  - The base indent is removed.
+  - Either ` * `, tabs, or two sequential spaces are removed if found.
+- For each JS multiline comment line other than the first:
+  - The base indent is removed.
+  - A single space is removed if found.
+- For each HTML comment line other than the first:
+  - The base indent is removed.
+  - A single space is removed if found.
 
 ```js
 [
