@@ -4,11 +4,11 @@
 
 # P23
 
-Simple tool for adding parsable notes as comments within Svelte components.
+Simple tool for parsing referenceable comments within Svelte components.
 
 ## Made to be Plundered
 
-Do whatever as long as you adhere to the permissive MIT license found within.
+Fork, pillage, and plunder! Do whatever as long as you adhere to the permissive MIT license found within.
 
 ## Examples
 
@@ -149,13 +149,13 @@ multiline block comments.
 3. Path segments must adhere to: `^[$@a-zA-Z_][$@a-zA-Z0-9_\-]*$`. This list may be extended in future to include **almost** any string character.
 4. Nodes with the same name are in order of appearance within the file.
 5. Yes, it will parse block comments in CSS nodes too.
-6. "Don't have a cow, Man!" - Bart Simpson
+6. "Don't have a cow, Man!"
 
 ## Options
 
 Defaults noted as field values. 
 
-For information on glob and glob options see [NPM _glob_ package](https://www.npmjs.com/package/glob) ([Github](https://github.com/isaacs/node-glob)). I should hide this library behind the API, as an implementation detail, but CBA for the time being.
+For information on glob and glob options see [NPM _glob_ package](https://www.npmjs.com/package/glob) ([Github](https://github.com/isaacs/node-glob)). I should hide this library behind the API, but CBA at least for the first version.
 
 ```js
 import p23 from 'p23'
@@ -176,6 +176,6 @@ p23({
 
 I simply wanted to document a component's API within itself and regenerate that documentation in a form I please, particularly within a README. To clarify, I want to document the **interface** (API) to the component by documenting its single implementation. Ths includes details such as: name, description, module & instance properties, slots, set context, and defaults where applicable.
 
-A few documentation tools come close but none completely satisfy my need for simplicity, readability, flexibility, ability to document all mentioned aspects of the API. Furthermore, existing tools traded-off too much flexibility for conciseness. So I set about creating [**P24**](https://github.com/PaulioRandall/p24). In the process I was able to separate the concern of parsing annotated comments as this library, **P23**.
+A few documentation tools come close but none completely satisfy my need for simplicity, readability, flexibility, ability to document all mentioned aspects of the API. Furthermore, existing tools traded-off too much flexibility for conciseness. So I set about creating [**P24**](https://github.com/PaulioRandall/p24). In the process I was able to separate the concern of parsing annotated comments into **P23**.
 
 To clarify, **P23** is not about documenting components (**P24** does that). It is about specifying parsable comments within Svelte components. The output can then be used by a documentation package or some other innovative tooling. For example, you could build a changelog package where maintainers write changes to a component within the component. The package could render them in a similar manner to how **P24** does with API documentation.
