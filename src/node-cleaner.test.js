@@ -134,4 +134,38 @@ describe('node-cleaner.js', () => {
 
 		expect(act).toEqual(exp)
 	})
+
+	test('HTML block tab indent', () => {
+		const givenNode = lines(
+			'	<!--p23.artist first', //
+			'		a',
+			'		b',
+			'	-->'
+		)
+
+		const act = clean([
+			{
+				nodes: {
+					artist: [givenNode],
+				},
+			},
+		])
+
+		const expNode = lines(
+			' first', //
+			'a',
+			'b',
+			''
+		)
+
+		const exp = [
+			{
+				nodes: {
+					artist: [expNode],
+				},
+			},
+		]
+
+		expect(act).toEqual(exp)
+	})
 })

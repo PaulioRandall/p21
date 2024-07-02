@@ -112,7 +112,7 @@ Cleaning removes the P23 delimiter and leading whitespace from lines. Whitespace
   - A single space is removed if found.
 - For each HTML comment line other than the first:
   - The base indent is removed.
-  - A single space is removed if found.
+  - A tab or single space is removed if found.
 
 ```js
 [
@@ -183,8 +183,8 @@ p23({
 
 ## Back Story
 
-I simply wanted to document a component's API within itself and regenerate that documentation in a form I please, particularly within a README. To clarify, I want to document the **interface** (API) to the component by documenting its single implementation. Ths includes details such as: name, description, module & instance properties, slots, set context, and defaults where applicable.
+I simply wanted to document a component's API within itself and regenerate that documentation in a form I please, particularly within a README. To clarify, I want to document the **interface** (API) to the component by documenting its single implementation. Ths includes details such as name, description, module & instance properties, slots, set context, and defaults where applicable.
 
-A few documentation tools come close but none completely satisfy my need for simplicity, readability, flexibility, ability to document all mentioned aspects of the API. Furthermore, existing tools traded-off too much flexibility for conciseness. So I set about creating [**P24**](https://github.com/PaulioRandall/p24). In the process I was able to separate the concern of parsing annotated comments into **P23**.
+A few documentation tools come close but none completely satisfy my need for simplicity, readability, flexibility, and ability to document all mentioned aspects of the API. Furthermore, existing tools traded-off too much flexibility for conciseness. So I set about creating [**P24**](https://github.com/PaulioRandall/p24). In the process I was able to separate the concern of parsing annotated comments into **P23**.
 
 To clarify, **P23** is not about documenting components (**P24** does that). It is about specifying parsable comments within Svelte components. The output can then be used by a documentation package or some other innovative tooling. For example, you could build a changelog package where maintainers write changes to a component within the component. The package could render them in a similar manner to how **P24** does with API documentation.

@@ -155,6 +155,8 @@ const removeHtmlBlockLineIndents = (s, indent) => {
 
 		if (/^ /.test(lines[i])) {
 			lines[i] = lines[i].slice(1)
+		} else if (/^\t/.test(lines[i])) {
+			lines[i] = lines[i].slice(1)
 		}
 	}
 
